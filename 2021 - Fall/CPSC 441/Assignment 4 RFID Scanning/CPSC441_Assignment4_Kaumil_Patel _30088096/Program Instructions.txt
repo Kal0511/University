@@ -1,0 +1,19 @@
+Assignment 4
+made by Kaumil Patel 30088096
+
+RFID Scanning
+Loads text files and performs different methods of scanning 
+
+#compile command
+g++ rfid.cpp -o rfid
+
+#run command
+./rfid
+
+#client menu
+Menu:
+1 - Scan file							// Performs polling at different levels and with different algorithms
+2 - Change K value						// Resizes Tree with new K value
+3 - Quit								// Closes program
+
+#test files go in data folder example "test7.txt" or "test8.txt"

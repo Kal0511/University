@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0075)https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignment4.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="./CPSC 441_ Assignment 4_files/cpsc441.css" rel="stylesheet" type="text/css">
+
+<title>CPSC 441: Assignment 4</title>
+
+</head><body><table width="80%">
+<tbody><tr>
+  <td align="center"><h1>CPSC 441: Computer Networks</h1></td>
+</tr>
+<tr><td align="center"><h3>Fall 2021</h3></td></tr>
+</tbody></table>
+
+<div class="container">
+
+<div class="leftside">
+
+<ul>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/index.html">CPSC 441 Home</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/slides.html">Course Content</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/textbook.html">Textbook</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/instructor.html">Instructor</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/tutorials.html">Tutorials</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignments.html">Assignments</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/exams.html">Exams</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/grading.html">Grading</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/links.html">Useful Links</a></li>
+</ul>
+
+</div>
+
+<div class="content">
+
+<h1>Assignment 4: RFID Scanning (40 marks)</h1>
+
+Due: <b>Friday, December 3, 2021</b> (11:59pm)
+
+<h2>Learning Objectives</h2>
+
+<p>
+The purpose of this assignment is to learn about Medium Access
+Control (MAC) protocols, which regulate access to a shared channel.
+In particular, you will study a slotted-time protocol
+similar to those used in high-tech RFID scanning systems.
+While doing so, you will reinforce key concepts regarding
+multiple-access protocols (e.g., shared channel, multiple nodes,
+random access, collisions, successes, idle slots, efficiency),
+and determine how such protocols perform across a wide range of test cases.
+</p>
+
+<h2>Background</h2>
+
+<p>
+  In the future, large retail stores like WalMart may use RFID scanning technology
+  at their checkout lanes instead of human clerks or cashiers. In this approach,
+  each item in the store has a small micro-chip attached that uniquely identifies the item
+  using a K-bit identifier.
+  At the checkout, a customer with a basket of N items walks past the RFID scanner,
+  which "instantly" scans the basket of goods, identifies each item, determines a
+  price for each, calculates the total, and initiates the e-payment process with
+  the customer.
+</p>
+  
+<h2>Problem Description</h2>
+
+<p>
+  In this assignment, you will explore the details of the RFID scanning step,
+  and devise an efficient MAC protocol to make the checkout process simple and fast.
+  You will be told the value of K, which determines the K-bit address space for possible items.
+  You will then be given multiple test cases of customers with baskets of goods.
+  For each customer, you must determine how many items they have, how long
+  it takes the RFID scanner to identify everything in the basket, and how efficient
+  it is in doing so.
+
+</p><h2>MAC Protocol Description</h2>
+
+<p></p>
+The following MAC protocol is quite different from Ethernet's CSMA/CD or WiFi's CSMA/CA,
+but is also simpler, since it is a discrete-time (slotted) protocol.
+While this specific protocol will <b>not</b>
+be covered in class, the general design principles
+and performance tradeoffs of channel access protocols
+will be discussed during the lectures on MAC protocols,
+and should be helpful to you when undertaking this assignment.
+However, the assignment is adequately self-contained that you can
+probably start on it even before we cover MAC protocols in class.
+<p></p>
+<p>
+Consider a simple bus-based linear-topology LAN with M nodes (items),
+where M is a power of 2 (e.g., M = 8). 
+Attached to one end of this network is a special controller
+that is in charge of coordinating access to the shared channel
+for the M nodes. Assume that the nodes are numbered from
+0 to M-1 in binary (e.g., from '000' to '111' if M = 8), from left to right.
+</p>
+
+<p>
+The RFID scanning protocol conceptually arranges these nodes
+into a complete binary tree configuration.
+For example, if M = 8,
+there are 8 (real) leaf nodes at Level 3,
+there are 4 virtual nodes
+(each with 2 children) above them
+at Level 2,
+there are 2 virtual nodes above these at Level 1,
+and 1 virtual node 
+at Level 0, which is the root of the binary tree.
+</p>
+
+<p>
+Each virtual node in this binary tree represents
+a particular subset of the real nodes (items) in the network.
+For example, the root node represents "all nodes in the network",
+while the leftmost virtual node on Level 1 represents "all nodes
+with an address of the form 0XX", and the rightmost virtual node
+on Level 1 represents "all nodes with an address of the form 1XX",
+where 'X' denotes a wild-card (i.e., Don't Care) condition.
+Similar reasoning applies recursively for other levels of the tree.
+For example, the rightmost virtual node on Level 2 represents
+"all nodes with an address of the form 11X".
+Note that the virtual binary tree structure is conceptual only; the physical
+layout of the network is simply a linear bus with M nodes.
+</p>
+
+<p>
+The controller regulates channel access on this LAN by polling (querying)
+certain subsets of the nodes in subsequent steps of the protocol, giving them
+permission to transmit.
+These polling steps are
+referred to as <b>probes</b> in the following description of the protocol.
+For example,
+suppose that nodes (items) 1, 5, and 6 are present and ready to transmit.
+If the controller starts the probing at the root of the tree (Level 0),
+a collision would occur on the first probe attempt, since three nodes
+all try to transmit at the same time. Subsequent recursive probes
+to the two individual nodes on Level 1 
+would result in a successful transmission for
+node 1 in the first time slot
+(since it is the only node in the left subtree whose address starts with '0'),
+followed by another collision probe for nodes 5 and 6 in the next
+time slot (since both nodes have an address that starts with '1').
+Further recursive probes down the right subtree to Level 2 will resolve
+the channel access, with a successful transmission by node 5 followed
+by a successful transmission by node 6.
+In this example scenario, resolving the three original 
+data frame transmissions required a total of 5 probe slots:
+2 collisions, 3 successes, and 0 idle.
+Continuing the example,
+if the controller were to start at Level 3 for the given initial
+scenario, there would be 8 probes required: 3 of these would lead to
+successful transmissions (nodes 1, 5, and 6), and 5 of these would
+be idle (wasted) probe slots. In this example,
+starting the probing at the root level is 60% efficient
+(i.e., 3 successes out of 5 slots), while starting the probing
+at the leaf level has an efficiency of 37.5% (i.e., 3 successes out of 8 slots).
+</p>
+
+<h2>Your Task</h2>
+
+<p>
+  Your task in this assignment is to write a program that models
+  this recursive slotted-time MAC protocol, and determines its
+  performance on different baskets of items at WalMart.
+  Your program can be written in either C or C++.
+</p>
+<p>
+Your program should be easily parameterizable for different values
+of <b>K</b>, either on the command line, via user input, or in the code itself.
+Your program should be carefully instrumented to keep track of
+the different events that can happen during the scanning of a specific basket
+of goods, and to report the total time taken for each scan.
+Once you have tested your program to ensure that it is working properly,
+use it to answer the questions indicated below.
+</p>
+
+<h2>Testing</h2>
+
+<p>
+  Here are some test cases for K=3. These are each small enough that you
+  should be able to analyze them manually to verify if your program is correct.
+</p>
+<ul>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test0.txt">Empty Basket (0 items)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test1.txt">Basket with 1 item (item 5 only)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test2.txt">Basket with 2 items (items 1 and 5)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test3.txt">Basket with 3 items (items 1, 5, and 6)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test4.txt">Basket with 4 items (items 1, 4, 5, and 6)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test5.txt">Basket with 5 items (items 0, 1, 4, 5, and 6)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test6.txt">Basket with 6 items (items 0, 1, 2, 4, 5, and 6)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test7.txt">Basket with 7 items (items 0, 1, 2, 4, 5, 6, and 7) </a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test8.txt">Basket with 8 items (items 0, 1, 2, 3, 4, 5, 6, and 7)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test9.txt">Basket with 2 assorted items (items 1 and 2)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test10.txt">Another basket with 2 assorted items (items 2 and 3)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test11.txt">Basket with 3 assorted items (items 1, 6, and 7)</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/test12.txt">Basket with 4 assorted items (items 1, 2, 6, and 7)</a></li>
+</ul>
+
+<p>
+  And here are the actual test cases for the assignment, with K=10 and M=1024.
+</p>
+<ul>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer1.txt">Customer 1</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer2.txt">Customer 2</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer3.txt">Customer 3</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer4.txt">Customer 4</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer5.txt">Customer 5</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer6.txt">Customer 6</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer7.txt">Customer 7</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer8.txt">Customer 8</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer9.txt">Customer 9</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass4/customer10.txt">Customer 10</a></li>
+</ul>
+
+<h2>Questions</h2>
+
+<p>
+  Use your program to answer the following questions:
+</p>
+<ol>
+  <li>
+    Which of the customers has the most items? How many items do they have?
+  </li>
+  <li>
+    When starting at the <b>leaf level</b> of the tree,
+    which basket of goods takes the most time to scan?
+    How many time slots does it require?
+  </li>
+  <li>
+    When starting at the <b>root level</b> of the tree,
+    which basket of goods takes the most time to scan?
+    How many time slots does it require?
+  </li>
+  <li>
+    When starting at the root level of the tree,
+    which basket of goods takes the <b>least time</b> to scan?
+    How many time slots are needed?
+  </li>
+  <li>
+    When starting at the root level of the tree,
+    which basket of goods generates the <b>most collisions</b> during scanning?
+    How many collisions occur?
+  </li>
+  <li>
+    When starting at the root level of the tree,
+    which basket of goods generates the <b>highest proportion of successful slots</b> (i.e., efficiency) during scanning?
+  </li>
+</ol>
+
+<h2>Grading Scheme</h2>
+
+<p>
+The proposed grading scheme for the assignment is as follows:
+</p>
+<ul>
+<li>
+<b>20 marks</b>
+for the design and implementation of a program that can successfully
+model the RFID scanning protocol described above.
+These marks will be based on proper input handling for baskets of goods (2 marks),
+MAC protocol modeling (8 marks), suitable instrumentation (4 marks),
+output generation (2 marks), as well as general style and readabililty (4 marks).
+Your program should be efficient to run for any reasonable value of K (say, up to 16).
+</li>
+<li>
+<b>12 marks</b>
+for answers to the questions above (6 questions, 2 marks for each)
+</li>
+<li>
+<b>4 marks</b>
+for a brief user manual describing how to compile and use your program
+</li>
+<li>
+<b>4 marks</b>
+for a short written summary (at most 1 page)
+of your results and observations about the RFID scanning MAC protocol
+(There is NO DEMO required for this assignment.)
+</li></ul>
+
+<p>
+<b>Optional Bonus 1</b>: (<b>2 marks</b>)
+
+Depending on the basket of goods, the RFID scanning protocol might
+be more efficient if you were to start scanning at an intermediate level
+of the binary tree, rather than always starting at the root or the leaf level.
+Modify your program to explore this idea, and try to formulate a heuristic
+answer (i.e., rule of thumb) for how to choose the best starting level
+for this protocol for a given basket of goods.
+Explain your result as best you can.
+</p>
+
+<p>
+<b>Optional Bonus 2</b>: (<b>2 marks</b>)
+
+From some of the small test cases above, you may get an idea for how to
+improve the basic RFID scanning protocol. If so, modify your program to
+evaluate the effectiveness of this idea. Show your new results.
+</p>
+
+<p>
+When you are finished, please submit your individual assignment solution
+via D2L, on or before the stated deadline.
+</p>
+
+<h2>Tips</h2>
+
+<ul>
+<li>
+  Start with the simple example test cases for K=3 given above.
+  Generate some more test cases of your own if you need them.
+  If your protocol works correctly for K=3, then it should work correctly
+  for any other value of K (smaller or larger), as well. Really!
+</li>
+<li>
+  This problem lends itself naturally to a recursive solution,
+  which should be both elegant and fast. Iterative solutions
+  are also fine, however.
+</li>
+</ul>
+
+</div>
+
+</div>
+
+
+</body></html>

@@ -1,0 +1,10 @@
+customer1.txt
+customer2.txt
+customer3.txt
+customer4.txt
+customer5.txt
+customer6.txt
+customer7.txt
+customer8.txt
+customer9.txt
+customer10.txt

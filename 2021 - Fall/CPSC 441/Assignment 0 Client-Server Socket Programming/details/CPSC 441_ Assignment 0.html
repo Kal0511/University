@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0075)https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignment0.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="./CPSC 441_ Assignment 0_files/cpsc441.css" rel="stylesheet" type="text/css">
+
+<title>CPSC 441: Assignment 0</title>
+
+</head><body><table width="80%">
+<tbody><tr>
+  <td align="center"><h1>CPSC 441: Computer Networks</h1></td>
+</tr>
+<tr><td align="center"><h3>Fall 2021</h3></td></tr>
+</tbody></table>
+
+<div class="container">
+
+<div class="leftside">
+
+<ul>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/index.html">CPSC 441 Home</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/slides.html">Course Content</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/textbook.html">Textbook</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/instructor.html">Instructor</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/tutorials.html">Tutorials</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignments.html">Assignments</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/exams.html">Exams</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/grading.html">Grading</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/links.html">Useful Links</a></li>
+</ul>
+
+</div>
+
+<div class="content">
+
+<h1>Assignment 0: Client-Server Testing (0 marks)</h1>
+
+Due: <b>Friday, September 17, 2021</b> (11:59pm)
+
+<h2>Learning Objectives</h2>
+
+<p>
+The purpose of this assignment is to learn about client-server socket programming.
+</p>
+
+<h2>Preamble</h2>
+
+<p>
+  On the Internet, there is a simple CPSC 441 test server running
+  on <b>csx1.cpsc.ucalgary.ca</b> (IP 136.159.5.25) on TCP port 44101.
+  You can verify its existence using the telnet command as demonstrated
+  in class. Your goal in this warm-up assignment is to write a simple
+  client-side program that can talk to this server using a TCP socket.
+  This practice exercise will help you get started with the (much more
+  complicated) socket programming required for
+  <a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignment1.html">Assignment 1</a>.
+</p>
+
+<h2>Background</h2>
+
+<p>
+  Most network applications are written using a client-server paradigm.
+  The server is a special entity that runs forever, listening for clients
+  that make requests for its specific service. Clients are ordinary
+  users (or computers) who send requests to the server asking for service.
+  Here is an example of the C code for the
+  <a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/examples/testserver.c">CPSC 441 test server</a>.
+  Your task is to write the code for a <b>client</b> that can talk to this server using TCP.
+</p>
+
+<h2>Technical Requirements</h2>
+
+<p>
+  In this assignment, you will implement your very own client program
+  to talk to the CPSC 441 test server.
+  You can do so using either C or C++ (perhaps both!).
+</p>
+
+<p>
+  There are three main pieces of functionality needed in your client.
+  First, it needs to establish a TCP connection to talk to the server.
+  Second, it needs to exchange one or more commands with the server,
+  presumably in a loop to support client-server interaction from the user.
+  Finally, once the client is all done, it needs to gracefully close the
+  TCP connection that it was using.
+</p>
+
+<p>
+When you are finished,
+please show your solution to your TA in your tutorial section.
+You do NOT need to upload anything into D2L for this one.
+</p>
+
+<h2>Testing</h2>
+
+<p>
+You can test your client using the following commands:
+</p>
+<ol>
+<li>
+HELLO: a polite application-level opening handshake between client and server;
+</li>
+<li>
+HELP: a query to see what basic commands the server supports;
+</li>
+<li>
+COUNT: a query to see how busy the CPSC 441 test server has been;
+</li>
+<li>
+INFO: a query to show what IP address and port the client is using;
+</li>
+<li>
+BYE: a polite application-level closing handshake between client and server.
+</li>
+</ol>
+
+<p>
+  Good luck, and have fun!
+</p>
+
+<h2>Grading Rubric</h2>
+
+<p>
+The grading scheme for the assignment is as follows:
+</p>
+<ul>
+<li>
+<b>0 marks</b>
+for the
+design and implementation of a functional client program that
+can handle simple commands between client and server.
+</li>
+<li>
+<b> 0 marks</b>
+for a suitable demonstration of your client
+to your TA in your tutorial section (or to your professor)
+at a mutually convenient time.
+</li>
+</ul>
+
+<h2>Bonus (optional, 0 marks)</h2>
+
+<p>
+  There might be a few other commands that the server supports,
+  but these are undocumented. If you find some,
+make sure to mention this during your demo.
+</p>
+
+<h2>Tips</h2>
+
+<ul>
+<li>
+  This is intended to be a <b>very easy</b> assignment,
+  so please feel free to do it on your own time whenever convenient.
+  You will likely need 1-2 days of thinking/coding/debugging time to
+  get it fully working.
+</li>
+<li>
+  If you have never done socket programming in C/C++ before, you should
+  make sure to get to your CPSC 441 tutorials on this topic. Don't miss them!
+</li>
+<li>
+  There is a second CPSC 441 test server running on TCP port 44102,
+  just in case somebody crashes the first one. If you think you have
+  accidentally crashed one of the servers, please let Carey know via email
+  so that he can restart it. Thanks!
+</li>
+<li>
+  If no CPSC 441 test server is running at all, then your next best option is
+  to compile and run the server code somewhere yourself, either locally
+  or remotely. Make sure to revise the IP address and port as needed
+  (e.g., if testing over the loopback interface).
+</li>
+</ul>
+
+</div>
+
+</div>
+
+
+</body></html>

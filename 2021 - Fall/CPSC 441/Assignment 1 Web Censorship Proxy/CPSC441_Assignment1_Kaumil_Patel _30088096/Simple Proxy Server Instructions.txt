@@ -1,0 +1,52 @@
+Simple Proxy Server Instructions
+made by Kaumil Patel 30088096
+
+The application was build and tested on my personal laptop. Wireshark, telnet and firefox was used for testing and debugging the porgram.
+
+The server supports HTTP/1.0 or HTTP/1.1 requests and responses. 
+The porxy is able to parse requests and responses that are sent through and extracts key information like the method, path, version, host, content type, and content length. 
+These details are used to connect to diffrent servers and fullfil the clients requests. 
+The porgram is also able to filter the url and the body of requests and responses to block bad content. 
+When content is block the client is redirected to an error page.
+The admin can connect to the server on a special port to dynamically change the filter list and the blocking status. 
+
+
+#compile command 
+g++ simpleProxy.cpp -o simpleProxy
+
+#run command
+./simpleProxy
+
+
+#admin config 
+telnet [ip address of proxy server] [configPort (default = 12346)]
+
+#proxy user using telnet
+telnet [ip address of proxy server] [serverPort (default = 12345)]
+
+
+#example for proxy user
+telnet localhost 12345
+#sample request
+GET http://pages.cpsc.ucalgary.ca/~carey/CPSC441/assignment1.html HTTP/1.0
+
+
+#Admin menu
+
+Proxy Menu:
+1 - Toggle URL Filter						// toggles the url filter
+2 - Toggle Body Filter						// toggles the body filter
+3 - Filter List & Status					// displays the status of the url and body filtering settings and also displays the keyworks in the filter list
+4 - Add Keyword To Filter					// asks for the keywork to be added to the filter list
+5 - Remove Keyword From Filter				// asks for the index of the keyword to be removed from the filter list
+6 - Clear Filter							// clears the filter list
+7 - Shutdown Server							// closes all sockets and exits the application
+8 - Close connection						// closes the config connection and frees the config socket
+
+Enter option number (For help input - 9):	// input the option you want to select
+
+
+#changing the server port and config port
+In simpleProxy.cpp, at the top the of the file
+proxyPort defines the port users should use to access the server
+configPort defines the port the admin can use to access the config menu

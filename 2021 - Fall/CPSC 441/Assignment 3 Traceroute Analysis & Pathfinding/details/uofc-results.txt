@@ -1,0 +1,316 @@
+
+traceroute to www.donutmill.ca (198.49.23.145), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  0.304 ms  0.301 ms  0.316 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.362 ms  0.359 ms  0.357 ms
+ 4  10.18.44.86 (10.18.44.86)  0.253 ms  0.221 ms  0.220 ms
+ 5  10.18.44.61 (10.18.44.61)  0.451 ms  0.457 ms  0.520 ms
+ 6  10.59.226.26 (10.59.226.26)  0.312 ms  0.377 ms  0.411 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  3.599 ms  3.566 ms  4.118 ms
+ 8  h66-244-233-17.bigpipeinc.com (66.244.233.17)  1.491 ms  1.074 ms  1.245 ms
+ 9  * * *
+10  rc3so-be31-1.cg.shawcable.net (24.244.0.17)  4.484 ms  2.141 ms  1.657 ms
+11  rc4ec-be13.il.shawcable.net (66.163.65.18)  35.932 ms  31.592 ms  31.410 ms
+12  akamai.prolexic.com (208.115.136.35)  31.524 ms  31.251 ms  31.597 ms
+13  po110.bs-a.sech-ord.netarch.akamai.com (23.57.98.243)  31.296 ms  31.412 ms *
+14  * * *
+15  * * *
+16  * * *
+17  * * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+traceroute to www.usask.ca (128.233.198.150), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  5.180 ms  5.149 ms  5.156 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.388 ms  0.388 ms  0.495 ms
+ 4  10.18.44.86 (10.18.44.86)  0.256 ms  0.224 ms  0.230 ms
+ 5  10.18.44.61 (10.18.44.61)  0.444 ms  0.456 ms  0.522 ms
+ 6  10.59.226.26 (10.59.226.26)  0.333 ms  0.339 ms  0.301 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  3.377 ms  5.445 ms  4.547 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  1.278 ms  2.740 ms  9.252 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  10.485 ms  2.145 ms  9.275 ms
+10  edmn1rtr1.network.canarie.ca (205.189.32.168)  33.271 ms  32.167 ms  31.108 ms
+11  sask1rtr1.network.canarie.ca (205.189.32.189)  14.754 ms  12.726 ms  12.287 ms
+12  205.189.32.220 (205.189.32.220)  12.633 ms  13.568 ms  12.534 ms
+13  208.75.72.83 (208.75.72.83)  12.834 ms  14.646 ms  12.669 ms
+14  128.233.16.6 (128.233.16.6)  12.493 ms  13.578 ms  12.722 ms
+15  * * *
+16  * * *
+17  * * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to cs.uvic.ca (142.104.71.143), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  0.391 ms  0.383 ms  0.476 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.383 ms  0.421 ms  0.378 ms
+ 4  10.18.44.86 (10.18.44.86)  0.235 ms  0.229 ms  0.254 ms
+ 5  10.18.44.61 (10.18.44.61)  0.459 ms  0.447 ms  0.490 ms
+ 6  10.59.226.26 (10.59.226.26)  0.347 ms  0.324 ms  0.310 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  4.244 ms  1.536 ms  1.077 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  9.812 ms  1.593 ms  8.605 ms
+ 9  * clgr2rtr1.network.canarie.ca (205.189.32.212)  2.386 ms  1.537 ms
+10  vncv1rtr1.network.canarie.ca (205.189.32.174)  28.127 ms  12.478 ms  14.100 ms
+11  vctr3rtr1.network.canarie.ca (205.189.32.198)  14.257 ms  14.116 ms  14.061 ms
+12  205.189.32.197 (205.189.32.197)  21.091 ms  14.131 ms  15.343 ms
+13  129-oran-uviccle-cr1.vctr3.bc.net (207.23.241.140)  20.003 ms  14.266 ms  14.419 ms
+14  142.104.100.98 (142.104.100.98)  17.465 ms  17.329 ms  15.421 ms
+15  142.104.100.150 (142.104.100.150)  24.108 ms  16.755 ms  15.634 ms
+16  * * *
+17  * * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to cs.dal.ca (129.173.212.37), 30 hops max, 60 byte packets
+ 1  fivegate.cs.ucalgary.ca (136.159.5.1)  9.488 ms  9.482 ms  9.486 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.390 ms  0.391 ms  0.501 ms
+ 4  10.18.44.86 (10.18.44.86)  0.225 ms  0.253 ms  0.229 ms
+ 5  10.18.44.61 (10.18.44.61)  0.458 ms  0.453 ms  0.462 ms
+ 6  10.59.226.26 (10.59.226.26)  0.334 ms  0.330 ms  0.326 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  1.055 ms  0.996 ms  0.955 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  0.971 ms  0.996 ms  1.096 ms
+ 9  clgr2rtr1.canarie.ca (205.189.32.212)  13.460 ms  13.433 ms  13.392 ms
+10  rgna1rtr1.canarie.ca (205.189.32.234)  9.560 ms  9.382 ms  9.397 ms
+11  wnpg2rtr1.canarie.ca (205.189.32.239)  15.488 ms  15.561 ms  15.534 ms
+12  toro3rtr1.canarie.ca.canarie.ca (205.189.32.210)  39.244 ms  36.629 ms  36.574 ms
+13  toro1rtr1.canarie.ca (205.189.32.119)  37.464 ms  37.025 ms  37.265 ms
+14  mtrl2rtr1.canarie.ca (205.189.32.193)  43.817 ms  43.530 ms  43.581 ms
+15  frdn1rtr1.canarie.ca (205.189.32.230)  58.725 ms  58.441 ms  58.705 ms
+16  hlfx1rtr1.canarie.ca (205.189.32.223)  65.007 ms  65.045 ms  65.020 ms
+17  205.189.32.232 (205.189.32.232)  65.088 ms  64.945 ms  64.982 ms
+18  192.75.96.138 (192.75.96.138)  64.888 ms  65.005 ms  64.883 ms
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to www.lordnelsonhotel.com (142.176.164.67), 30 hops max, 60 byte packets
+ 1  fivegate.cs.ucalgary.ca (136.159.5.1)  0.332 ms  0.314 ms  0.302 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.364 ms  0.392 ms  0.326 ms
+ 4  10.18.44.86 (10.18.44.86)  0.227 ms  0.209 ms  0.271 ms
+ 5  10.18.44.61 (10.18.44.61)  0.378 ms  0.362 ms  0.354 ms
+ 6  10.59.226.26 (10.59.226.26)  0.294 ms  0.302 ms  0.298 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  0.976 ms  1.179 ms  3.737 ms
+ 8  h66-244-233-17.bigpipeinc.com (66.244.233.17)  0.990 ms  0.894 ms  2.719 ms
+ 9  * * *
+10  rc3so-be31-1.cg.shawcable.net (24.244.0.17)  2.218 ms  3.649 ms  2.203 ms
+11  rc4ec-be13.il.shawcable.net (66.163.65.18)  31.123 ms  31.035 ms  30.931 ms
+12  * * *
+13  ae8.bx01.toro.on.aliant.net (207.231.227.206)  50.901 ms  50.856 ms  50.931 ms
+14  ae0.cr02.stjh.nb.aliant.net (207.231.227.54)  69.466 ms  69.255 ms  69.281 ms
+15  ae4.cr02.drmo.ns.aliant.net (142.166.129.66)  72.308 ms be3-50.cr01.stjh.nb.aliant.net (142.166.181.109)  69.358 ms  69.154 ms
+16  hg-0-4-0-1-50.cr01.drmo.ns.aliant.net (142.166.218.65)  72.782 ms  72.643 ms  72.539 ms
+17  ae30.gw01.hlfx.ns.aliant.net (142.166.181.26)  73.926 ms  74.021 ms hg-0-4-0-0.cr01.hlfx.ns.aliant.net (142.166.211.73)  73.076 ms
+18  142.176.164.66 (142.176.164.66)  73.954 ms  74.050 ms ae30.gw01.hlfx.ns.aliant.net (142.166.181.26)  72.980 ms
+19  142.176.164.66 (142.176.164.66)  72.982 ms * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to cs.umass.edu (128.119.240.136), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  1.559 ms  1.548 ms  1.561 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.379 ms  0.397 ms  0.533 ms
+ 4  10.18.44.86 (10.18.44.86)  0.240 ms  0.262 ms  0.234 ms
+ 5  10.18.44.61 (10.18.44.61)  0.476 ms  0.476 ms  0.519 ms
+ 6  10.59.226.26 (10.59.226.26)  0.330 ms  0.333 ms  0.346 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  1.182 ms  11.753 ms  0.906 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  1.129 ms *  0.993 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  1.411 ms  1.362 ms  7.102 ms
+10  rgna1rtr1.network.canarie.ca (205.189.32.234)  11.509 ms  10.084 ms  10.046 ms
+11  wnpg2rtr1.network.canarie.ca (205.189.32.239)  15.893 ms  15.847 ms  19.265 ms
+12  hundredge-0-0-0-20.135.core1.star.net.internet2.edu (198.71.45.194)  42.875 ms  40.895 ms  34.728 ms
+13  * * *
+14  fourhundredge-0-0-0-18.4079.core2.eqch.net.internet2.edu (163.253.1.67)  50.752 ms fourhundredge-0-0-0-19.4079.core2.eqch.net.internet2.edu (163.253.1.69)  48.785 ms  48.758 ms
+15  fourhundredge-0-0-0-21.4079.core2.clev.net.internet2.edu (163.253.2.143)  49.061 ms fourhundredge-0-0-0-0.4079.core2.clev.net.internet2.edu (163.253.2.16)  49.007 ms  48.977 ms
+16  fourhundredge-0-0-0-1.4079.core1.alba.net.internet2.edu (163.253.1.20)  47.123 ms  47.186 ms  47.149 ms
+17  i2-re-chic-nox-mghpcc-gw1.nox.org (192.5.89.253)  48.011 ms  49.980 ms  48.610 ms
+18  nox-mghpcc-gw1-umassnet-re2.nox.org (18.2.8.90)  55.210 ms  48.511 ms  48.134 ms
+19  69.16.1.0 (69.16.1.0)  48.175 ms  47.998 ms  83.151 ms
+20  core2-rt-et-8-3-0.gw.umass.edu (192.80.83.113)  48.768 ms core1-rt-et-8-3-0.gw.umass.edu (192.80.83.109)  48.427 ms  54.247 ms
+21  n5-rt-1-1-et-0-0-0.gw.umass.edu (128.119.0.8)  54.672 ms n5-rt-1-1-et-10-0-0.gw.umass.edu (128.119.0.10)  48.337 ms  48.630 ms
+22  cics-rt-xe-0-0-0.gw.umass.edu (128.119.3.32)  66.298 ms  66.452 ms  65.980 ms
+23  mailsrv.cs.umass.edu (128.119.240.136)  65.003 ms !X  48.332 ms !X  48.241 ms !X
+
+
+
+traceroute to cs.stanford.edu (171.64.64.64), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  0.404 ms  0.322 ms  0.350 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.382 ms  0.411 ms  0.414 ms
+ 4  10.18.44.86 (10.18.44.86)  0.251 ms  0.219 ms  0.206 ms
+ 5  10.18.44.61 (10.18.44.61)  0.479 ms  0.473 ms  0.486 ms
+ 6  10.59.226.26 (10.59.226.26)  0.323 ms  0.324 ms  0.331 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  2.950 ms  1.176 ms  1.173 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  2.233 ms  2.240 ms  2.171 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  2.012 ms  7.120 ms  2.522 ms
+10  vncv1rtr1.network.canarie.ca (205.189.32.174)  13.028 ms  12.997 ms  12.946 ms
+11  vctr3rtr1.network.canarie.ca (205.189.32.198)  14.323 ms  16.323 ms  16.259 ms
+12  sttl1rtr1.network.canarie.ca (205.189.32.182)  16.010 ms  15.888 ms  23.831 ms
+13  cenichpr-1-is-jmb-778.snvaca.pacificwave.net (207.231.245.129)  48.794 ms  48.419 ms  48.354 ms
+14  hpr-stan--svl-hpr3-100ge.cenic.net (137.164.27.61)  33.613 ms  33.873 ms  33.368 ms
+15  csee-west-rtr-vl12.sunet (171.66.0.238)  33.035 ms  33.864 ms  33.816 ms
+16  cs.stanford.edu (171.64.64.64)  33.054 ms  33.377 ms  33.891 ms
+
+
+
+traceroute to www.liu.se (130.236.18.52), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  0.866 ms  0.845 ms  0.865 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.442 ms  0.550 ms  0.588 ms
+ 4  10.18.44.86 (10.18.44.86)  0.347 ms  0.315 ms  0.283 ms
+ 5  10.18.44.61 (10.18.44.61)  0.600 ms  0.567 ms  0.518 ms
+ 6  10.59.226.26 (10.59.226.26)  0.337 ms  0.337 ms  0.313 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  0.998 ms  5.214 ms  0.973 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  1.940 ms  1.882 ms  4.981 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  7.041 ms  1.730 ms  1.693 ms
+10  rgna1rtr1.network.canarie.ca (205.189.32.234)  9.542 ms  10.801 ms  10.170 ms
+11  wnpg2rtr1.network.canarie.ca (205.189.32.239)  15.856 ms  15.821 ms  15.777 ms
+12  toro3rtr1.network.canarie.ca (205.189.32.210)  36.972 ms  37.814 ms  37.780 ms
+13  toro1rtr1.network.canarie.ca (205.189.32.119)  37.231 ms  37.298 ms  37.085 ms
+14  us-man.nordu.net (109.105.98.17)  49.103 ms  202.527 ms  112.382 ms
+15  nl-sar.nordu.net (109.105.97.65)  132.776 ms  132.625 ms  132.171 ms
+16  dk-esbj.nordu.net (109.105.97.74)  138.009 ms  139.602 ms  138.633 ms
+17  dk-bal2.nordu.net (109.105.97.2)  143.139 ms  143.083 ms  143.060 ms
+18  lnd88-r1.sunet.se (109.105.102.3)  144.883 ms  145.263 ms  144.807 ms
+19  vaxjo-vxj-r1.sunet.se (130.242.4.63)  166.227 ms  166.194 ms  166.160 ms
+20  jonkoping-jkg-r1.sunet.se (130.242.4.54)  151.972 ms  148.401 ms  150.877 ms
+21  linkoping-lin3-r1.sunet.se (130.242.4.53)  150.640 ms  149.892 ms  174.642 ms
+22  liu1.sunet.se (130.242.6.75)  157.778 ms  151.556 ms  153.479 ms
+23  a-beb-1-1-41--liu-r1-xe-1-0-9.net.liu.se (130.236.9.229)  150.297 ms  302.953 ms  150.326 ms
+24  fw-dc-a-link.net.liu.se (130.236.0.16)  155.335 ms  150.136 ms  152.706 ms
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to www.unive.it (157.138.7.88), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  0.432 ms  0.392 ms  0.396 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.388 ms  0.394 ms  0.401 ms
+ 4  10.18.44.86 (10.18.44.86)  0.231 ms  0.235 ms  0.261 ms
+ 5  10.18.44.61 (10.18.44.61)  0.520 ms  0.520 ms  0.532 ms
+ 6  10.59.226.26 (10.59.226.26)  0.331 ms  0.397 ms  0.354 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  3.965 ms  38.238 ms  1.797 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  7.671 ms  4.140 ms  4.108 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  1.774 ms  2.685 ms  2.048 ms
+10  rgna1rtr1.network.canarie.ca (205.189.32.234)  10.414 ms  10.409 ms  10.356 ms
+11  wnpg2rtr1.network.canarie.ca (205.189.32.239)  16.769 ms  16.835 ms  18.213 ms
+12  toro3rtr1.network.canarie.ca (205.189.32.210)  37.328 ms  36.999 ms  74.632 ms
+13  toro1rtr1.network.canarie.ca (205.189.32.119)  52.079 ms  37.326 ms  48.592 ms
+14  canarie.mx1.par.fr.geant.net (62.40.124.221)  118.273 ms  118.232 ms  118.198 ms
+15  ae5.mx1.gen.ch.geant.net (62.40.98.182)  124.668 ms  125.036 ms  128.845 ms
+16  ae6.mx1.mil2.it.geant.net (62.40.98.81)  131.466 ms  131.800 ms  131.389 ms
+17  garr-gw.mx1.mil2.it.geant.net (62.40.125.181)  131.551 ms  163.440 ms  131.385 ms
+18  rx2-mi2-rx2-mi1.mi1.garr.net (90.147.80.9)  145.532 ms rx2-mi2-rx2-rm2.rm2.garr.net (90.147.80.18)  143.563 ms rx2-mi2-rx2-mi1.mi1.garr.net (90.147.80.9)  145.558 ms
+19  rx2-rm2-rx2-bo1.bo1.garr.net (90.147.80.34)  149.982 ms  158.944 ms rx2-mi1-rx2-bo1.bo1.garr.net (90.147.80.6)  136.908 ms
+20  rx1-bo1-rx1-pd2.pd2.garr.net (90.147.80.14)  138.948 ms  146.115 ms  137.962 ms
+21  rx1-pd2-re1-ve-l3.ve.garr.net (90.147.81.218)  168.926 ms  159.863 ms  159.809 ms
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+
+
+
+traceroute to cs.waikato.ac.nz (130.217.226.35), 30 hops max, 60 byte packets
+ 1  _gateway (136.159.5.1)  9.674 ms  9.734 ms  9.705 ms
+ 2  * * *
+ 3  10.18.44.85 (10.18.44.85)  0.416 ms  0.548 ms  0.558 ms
+ 4  10.18.44.86 (10.18.44.86)  0.259 ms  0.232 ms  0.233 ms
+ 5  10.18.44.61 (10.18.44.61)  0.530 ms  0.541 ms  0.551 ms
+ 6  10.59.226.26 (10.59.226.26)  0.303 ms  0.287 ms  0.293 ms
+ 7  h76.gpvpn.ucalgary.ca (136.159.199.76)  1.282 ms  2.100 ms  1.241 ms
+ 8  h99.gpvpn.ucalgary.ca (136.159.199.99)  2.498 ms  2.457 ms  2.436 ms
+ 9  clgr2rtr1.network.canarie.ca (205.189.32.212)  1.755 ms  1.815 ms  1.674 ms
+10  vncv1rtr1.network.canarie.ca (205.189.32.174)  24.437 ms  23.493 ms  13.960 ms
+11  vctr3rtr1.network.canarie.ca (205.189.32.198)  14.447 ms  14.412 ms  14.467 ms
+12  sttl1rtr1.network.canarie.ca (205.189.32.182)  16.112 ms  16.864 ms  16.829 ms
+13  reannz-1-lo-jmb-706.sttlwa.pacificwave.net (207.231.240.33)  16.729 ms  15.889 ms  16.261 ms
+14  210.7.39.5 (210.7.39.5)  149.522 ms  149.475 ms  149.417 ms
+15  210.7.39.6 (210.7.39.6)  149.642 ms  149.681 ms  149.624 ms
+16  * * *
+17  * * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *

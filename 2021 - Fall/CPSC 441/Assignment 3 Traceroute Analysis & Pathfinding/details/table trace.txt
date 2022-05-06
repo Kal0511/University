@@ -1,0 +1,15 @@
+Type  Dest      DomainName                 IP         Loc    When       Hops Delay  Hops  Delay
+===============================================================================================
+AB1   Red Deer  donutmill.ca         198.49.23.145    NYC  Nov 3 15:37   13  31 ms   13   97 ms
+
+CAN1  UofS      www.usask.ca         128.233.198.150  SK   Nov 3 15:11   14  13 ms   12   63 ms 
+CAN2  UVic      cs.uvic.ca           142.104.71.143   BC   Nov 3 15:08   15  16 ms   11   60 ms 
+CAN3  Dal       cs.dal.ca            129.173.212.37   NS   Sep 4 21:40   18  65 ms   12  101 ms 
+CAN4  Halifax   lordnelsonhotel.com  142.176.164.67   NS   Sep 4 21:47   19  73 ms   13   75 ms 
+
+US1   UMass     cs.umass.edu         128.119.240.136  MA   Nov 3 15:22   23  48 ms   26  146 ms 
+US2   Stanford  cs.stanford.edu      171.64.64.64     CA   Nov 3 15:12   16  33 ms   12  102 ms 
+
+INTL1 LiU       www.liu.se           130.236.18.52    SE   Nov 3 15:24   24 150 ms   18  206 ms 
+INTL2 Venice    www.unive.it         157.138.7.88     IT   Nov 3 15:29   21 160 ms   16  304 ms 
+INTL3 Waikato 	cs.waikato.ac.nz     130.217.226.35   NZ   Nov 3 15:34   15 150 ms   12  174 ms

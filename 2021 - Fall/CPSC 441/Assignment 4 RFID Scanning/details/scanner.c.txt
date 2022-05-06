@@ -1,0 +1,186 @@
+/* This program models the RFID scanning protocol */
+/* for CPSC 441 Assignment 4 in Fall 2021.        */
+
+/* Usage: cc -o scanner scanner.c                 */
+/*        ./scanner < testN.txt                   */
+
+/* Written by Carey Williamson    September 6/21  */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define K 10            /* number of bits in IDs */
+#define M 1024            /* maximum number of items = 2**K */
+#define PRESENT 1      /* flag to indicate existence */
+#define ABSENT 0       /* flag to indicate absence */
+
+/* #define VERBOSE 1 */
+
+/* Starting level */
+#define ROOT 1
+#define LEAF 1
+#define OTHER 8
+
+int slots, idles, collisions, successes;
+int startlevel, items, itemid;
+int itemlist[M];
+
+void probe(first,last)
+    int first,last;
+  {
+    int i, mid;
+    int senders;
+
+#ifdef VERBOSE
+    printf("Called probe(%d, %d)\n", first, last);
+#endif
+    slots++;
+
+    senders = 0;
+    for( i = first; i <= last; i++ )
+      if( itemlist[i] == PRESENT )
+	senders++;
+
+    if( senders == 0 )
+      {
+#ifdef VERBOSE
+	printf("Idle.\n");
+#endif
+	idles++;
+      }
+    if( senders == 1 )
+      {
+#ifdef VERBOSE
+	printf("Success!\n");
+#endif
+	successes++;
+      }
+    if( senders > 1 )
+      {
+#ifdef VERBOSE
+	printf("Collision! Recursing down the tree...\n");
+#endif
+	collisions++;
+	mid = (first + last - 1) / 2;
+	probe(first, mid);
+	probe(mid+1, last);
+      }
+  }
+
+void probelevel(level)
+     int level;
+  {
+     int i;
+     int firstnode, lastnode;
+     int count, numnodes;
+
+     /* when probing at level i, we must make repeated */
+     /* probes enabling selected subsets of the nodes  */
+     /* for root level (0), this means all nodes 0 to M-1 */
+     /* for leaf level (K), this means one node at a time */
+
+#ifdef VERBOSE
+     printf("Called probelevel(%d)\n", level);
+#endif
+     if( (level < 0) || (level > K) )
+       printf("Whoa! level %d is out of whack!\n", level);
+
+     count = 1;
+     numnodes = M;
+     for( i = 0; i < level; i++ )
+       {
+	 count *= 2;
+	 numnodes /= 2;
+       }
+
+     for( i = 0; i < count; i++ )
+       {
+	 firstnode = i * numnodes;
+	 lastnode = firstnode + numnodes - 1;
+#ifdef VERBOSE
+	 printf("Probing from %d to %d\n", firstnode, lastnode);
+#endif
+
+	 probe(firstnode, lastnode);
+       }
+  }
+
+int main()
+  {
+    int i;
+
+    /* initialize */
+    for( i = 0; i < M; i++ )
+	itemlist[i] = ABSENT;
+
+    /* Read in the items in the basket of goods */
+    items = 0;
+    while( scanf("%d\n", &itemid) != EOF )
+      {
+	itemlist[itemid] = PRESENT;
+#ifdef VERBOSE
+	if( K == 3 )
+	  {
+	    printf("Item %d (%c%c%c) is present\n",
+		   itemid, '0'+((itemid&0x4)>>2), '0'+((itemid&0x2)>>1), '0'+(itemid&0x1));
+	  }
+	else printf("Item %d is present\n", itemid);
+#endif
+	items++;
+      }
+
+    printf("\n\nThat basket of goods has %d items\n", items);
+
+#ifdef ROOT
+    /* Do the RFID scanning protocol starting at root level */
+    slots = 0;
+    idles = 0;
+    collisions = 0;
+    successes = 0;
+    probelevel(0);
+
+    printf("\n");
+    printf("For RFID scanning protocol starting at ROOT level:\n");
+    /*    printf("For RFID scanning protocol starting at level %d:\n", 9); */
+    printf("Number of idle slots: %d\n", idles);
+    printf("Number of successful slots: %d\n", successes);
+    printf("Number of collision slots: %d\n", collisions);
+    printf("Total slots from ROOT level: %d\n", slots);
+    printf("Relative efficiency from ROOT level: %4.2f%%\n", 100.0*successes/slots);
+#endif
+
+#ifdef OTHER
+    /* Do the RFID scanning protocol starting at some other level */
+    slots = 0;
+    idles = 0;
+    collisions = 0;
+    successes = 0;
+    probelevel(OTHER);
+
+    printf("\n");
+    printf("For RFID scanning protocol starting at level %d:\n", OTHER);
+    printf("Number of idle slots: %d\n", idles);
+    printf("Number of successful slots: %d\n", successes);
+    printf("Number of collision slots: %d\n", collisions);
+    printf("Total slots from ROOT level: %d\n", slots);
+    printf("Relative efficiency from ROOT level: %4.2f%%\n", 100.0*successes/slots);
+#endif
+
+#ifdef LEAF
+    /* Do the RFID scanning protocol starting at leaf level */
+    slots = 0;
+    idles = 0;
+    collisions = 0;
+    successes = 0;
+    probelevel(K);
+
+    printf("\n");
+    printf("For RFID scanning protocol starting at LEAF level:\n");
+    printf("Number of idle slots: %d\n", idles);
+    printf("Number of successful slots: %d\n", successes);
+    printf("Number of collision slots: %d\n", collisions);
+    printf("Total slots from LEAF level: %d\n", slots);
+    printf("Relative efficiency from LEAF level: %4.2f%%\n", 100.0*successes/slots);
+#endif
+  }

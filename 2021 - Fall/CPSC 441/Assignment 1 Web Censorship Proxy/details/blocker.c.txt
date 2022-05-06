@@ -1,0 +1,544 @@
+/*
+ blocker.c -- a configurable Web proxy censor
+
+ Written by Carey Williamson for CPSC 441 Assignment 1 (Fall 2021).
+ This code is based on that from a CPSC 441 student in Winter 2014,
+ but modified to be a censor proxy rather than an odd-even proxy.
+ 
+ Usage: gcc -o blocker blocker.c
+        ./blocker portnum    (where port is between 1000-65535)
+
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <netdb.h>
+#include <time.h>
+
+// Boolean values to test for text and/or HTML files
+#define TRUE 1
+#define FALSE 0
+
+// Default port for HTTP interactions with Web servers
+#define HTTP_PORT 80
+
+// Set minimum and maximum ports allowed
+#define MIN_PORT 1024	// avoid well-known ports
+#define MAX_PORT 65535	// highest possible port number
+
+// Buffer size for processing HTTP requests and responses
+#define MAX_MESSAGE_SIZE 2048
+
+// Bigger buffer for HTTP response to client (just in case)
+#define MAX_HTMLPAGE_SIZE 10*MAX_MESSAGE_SIZE
+
+// Buffer size for other string processing operations
+#define MAX_STRING_SIZE 30
+
+// Maximum number of keywords on block list
+#define MAX_ITEMS 3
+
+// Debug level
+/* #define VERBOSE 1 */
+
+// Functions
+int makeTCPconn(char host[], int port);
+int sendHTTPrequest(int socket, char host[], char path[], int lowbyte, int highbyte);
+void forced();
+
+// Global variables
+int childsocket, thatsocket;
+
+int main(int argc, char *argv[])
+  {
+    struct sockaddr_in server;
+    int i, proxyport, pid, parentsocket, configsocket, tcpSocket, sz;
+    int readBytes, headersize, inHeader, isHTMLfile, isTEXTfile, length;
+    int databytes;
+    
+    //variables for parsing/constructing/sending of HTTP requests and responses
+    char HOST[MAX_MESSAGE_SIZE], PATH[MAX_MESSAGE_SIZE], URL[MAX_MESSAGE_SIZE];
+    char requestfromclient[MAX_MESSAGE_SIZE], configrequest[MAX_MESSAGE_SIZE];
+    char responsefromserver[MAX_MESSAGE_SIZE], responseheader[MAX_MESSAGE_SIZE];
+    char responsebody[MAX_HTMLPAGE_SIZE], responsetoclient[MAX_HTMLPAGE_SIZE];
+    char header[MAX_MESSAGE_SIZE];
+    char contentlength[MAX_STRING_SIZE], contentType[MAX_STRING_SIZE], TEMP[MAX_STRING_SIZE];
+
+    // variables for keeping track of keywords to block
+    int k, baddie;
+    char badlist[MAX_ITEMS][MAX_STRING_SIZE];
+    int baditems = 0;
+    int configflag = 0;
+    
+    // Read desired proxy port number from command line argument
+    if (argc < 2)
+      {
+	printf("Usage: ./blocker port\n");
+	exit(-1);
+      }
+    else
+      {
+	proxyport = 0;
+	i = 0;
+	while (argv[1][i] != '\0')
+	  {
+	    if (!isdigit(argv[1][i]))
+	      {
+		printf("Invalid port!\n");
+		exit(-1);
+	      }
+	    proxyport = proxyport*10 + (argv[1][i] - '0');
+	    i++;
+	  }
+	// Check port range
+	if((proxyport < MIN_PORT) || (proxyport > MAX_PORT))
+	  {
+	    printf("Invalid port number!\n");
+	    exit(-1);
+	  }	
+      }
+	
+    // Initialize socket structure, and start listening for connection requests
+    memset(&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(proxyport);
+    server.sin_addr.s_addr = htonl(INADDR_ANY );
+
+    if ((parentsocket = socket(PF_INET, SOCK_STREAM, 0)) == -1)
+      {
+	perror("Failed to create socket!\n");
+	exit(-1);
+      }
+    if (bind(parentsocket, (struct sockaddr *) &server, sizeof(struct sockaddr_in)) == -1)
+      {
+	perror("Unable to bind socket to desired port\n");
+	exit(-1);
+      }
+
+    if (listen(parentsocket, 20) == -1)
+      {
+	perror("Failure with listen() system call.\n");
+	exit(-1);
+      }
+
+    // Make another socket that listens for configuration changes
+    memset(&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(proxyport+1);
+    server.sin_addr.s_addr = htonl(INADDR_ANY );
+
+    if ((configsocket = socket(PF_INET, SOCK_STREAM, 0)) == -1)
+      {
+	perror("Failed to create config socket!\n");
+	exit(-1);
+      }
+    struct timeval timeout;      
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 0;
+    
+    if (setsockopt (configsocket, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+        perror("setsockopt failed\n");
+
+    if (bind(configsocket, (struct sockaddr *) &server, sizeof(struct sockaddr_in)) == -1)
+      {
+	perror("Unable to bind config socket to desired port\n");
+	exit(-1);
+      }
+
+    if (listen(configsocket, 2) == -1)
+      {
+	perror("Failure with listen() system call for config socket.\n");
+	exit(-1);
+      }
+    else
+      {
+	printf("You have 10 seconds right now to connect to config port %d...\n", proxyport+1);
+
+	if ((thatsocket = accept(configsocket, NULL, NULL )) == -1)
+	  {
+	    perror("Timeout on accept() system call for config socket...\n");
+	  }
+	else
+	  {
+	    printf("Connected now!\n");
+	    configflag++;
+
+	    // Revise timeout to be just 1 second for the receive on the config port
+	    timeout.tv_sec = 1;
+	    timeout.tv_usec = 0;
+    
+	    if (setsockopt (thatsocket, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+	      perror("setsockopt failed\n");
+	  }
+      }
+    
+    // Big while loop to continue listening for requests forever
+    while (1)
+      {
+	// check for any updates from the configuration port
+	if( configflag )
+	  {
+	    printf("Checking for updates on config port %d...\n", proxyport+1);
+	    if( (sz = recv(thatsocket, configrequest, MAX_MESSAGE_SIZE, 0)) > 0 )
+	      {
+		printf("Got %d bytes on config socket: '%s'\n", sz, configrequest);
+
+		// check for special BLOCK command here
+		if( configrequest[0] == 'B' && configrequest[1] == 'L' && configrequest[2] == 'O' &&
+		    configrequest[3] == 'C' && configrequest[4] == 'K' ) 
+		  {
+		    if( baditems == MAX_ITEMS )
+		      {
+			printf("Can't add any more blocked keywords. Sorry!\n");
+		      }
+		    else
+		      {
+			k = 0;
+			while( configrequest[k+6] != '\r' && configrequest[k+6] != '\n' )
+			  {
+			    printf("Putting letter '%c' into badlist[%d][%d]...\n",
+				   configrequest[k+6], baditems, k);
+			    badlist[baditems][k] = configrequest[k+6];
+			    k++;
+			  }
+			badlist[baditems][k] = '\0';
+			printf("Added '%s' to badlist, which now has %d items.\n",
+			       &badlist[baditems][0], baditems+1);
+			baditems++;
+		      }
+		    continue;
+		  }
+		// check for special UNBLOCK command here, to unblock most recent item
+		else if( configrequest[0] == 'U' && configrequest[1] == 'N' && configrequest[2] == 'B' &&
+			 configrequest[3] == 'L' && configrequest[4] == 'O' &&
+			 configrequest[5] == 'C' && configrequest[6] == 'K' )  
+		  {
+		    if( baditems == 0 )
+		      {
+			printf("Can't unblock anything from an empty keyword list. Sorry!\n");
+		      }
+		    else baditems--;
+		  }
+	      }
+	    else printf("Did not see anything new there\n");
+	  }
+    
+        printf("Web censorship parent process now listening on port %d...\n", proxyport);
+
+        // accept a connection 
+        if ((childsocket = accept(parentsocket, NULL, NULL )) == -1)
+	  {
+            perror("Failure with accept() system call.\n");
+            exit(-1);
+	  }
+
+        // try to create a child process to deal with this new client 
+        pid = fork();
+        if (pid < 0)
+	  {
+            perror("fork() failure!\n");
+            exit(-1);
+	  }
+
+        // use process id (pid) returned by fork to decide what to do next 
+	if (pid > 0)
+	  {
+	    // Parent process goes back to listening
+	    printf("Parent created child process %d for that request. Going back to listening...\n", pid);
+	    close(childsocket);
+	  }
+	else
+	  {
+            // the child process does everything here
+
+            // don't need the parent listener socket that was inherited 
+            close(parentsocket);
+
+            // obtain the HTTP request message from this client Web browser
+            while ((sz=recv(childsocket, requestfromclient, MAX_MESSAGE_SIZE, 0)) > 0)
+	      {
+		printf("Got %d bytes from client: '%s'\n", sz, requestfromclient);
+
+                // find and parse the GET request, isolating the URL for later use
+                char *pathname = strtok(requestfromclient, "\r\n");
+                printf("Found HTTP request: %s\n", pathname);
+                if (sscanf(pathname, "GET http://%s", URL) == 1)
+                    printf("URL = %s\n", URL);
+
+                // separate the hostname from the pathname
+                for (i = 0; i < strlen(URL); i++)
+		  {
+                    if (URL[i] == '/')
+		      {
+                        strncpy(HOST, URL, i); //copy out the hostname
+                        HOST[i] = '\0';
+                        break;
+		      }
+		  }
+
+		// check URL for unauthorized items being requested
+		baddie = 0;
+		printf("Checking the block list of %d items\n", baditems);
+                for (int k = 0; k < baditems; k++)
+		  {
+		    int lenny = strlen(&badlist[k][0]);
+		    printf("Checking item %d of length %d on the block list: %s\n",
+			   k, lenny, &badlist[k][0]);
+		    int matches = 0;
+		    int spot = 0;
+		    for (int j = i; j < strlen(URL); j++)
+		      {
+#ifdef VERBOSE
+			printf("Comparing URL[%d] letter '%c' to badlist[%d][%d] letter '%c'\n",
+			       j, URL[j], k, spot, badlist[k][spot]);
+#endif
+			if( URL[j] == badlist[k][spot] )
+			  {
+			    matches++;
+			    spot++;
+			  }
+			else
+			  {
+			    matches = 0;
+			    spot = 0;
+			  }
+			if( matches == lenny )
+			  {
+			    baddie = 1;
+			    break;
+			  }
+		      }
+		    if( baddie )
+		      printf("That is a bad URL that needs to be blocked!\n");
+		    else printf("That URL looks fine to me!\n");
+		  }
+                bzero(PATH, 500); //to clear junk at the beginning of this buffer. don't know why its there
+		for (; i < strlen(URL); i++)
+		  {
+		    strcat(PATH, &URL[i]); //copy out the path
+		    break;
+		  }
+
+                printf("First Half: %s\n", HOST); //firstHalf is the hostname
+                printf("Second Half: %s\n", PATH); //secondHalf is the path
+		if( baddie )
+		  {
+		    printf("That is a request for a censored item!\n");
+		    strcpy(PATH, "/~carey/CPSC441/ass1/error.html");
+		    printf("Revised Second Half: %s\n", PATH); //secondHalf is the path
+		  }
+
+                // connect to the Web server using TCP and send the HTTP request 
+                tcpSocket = makeTCPconn(HOST, HTTP_PORT);
+		if( tcpSocket > 0 )
+		  sendHTTPrequest(tcpSocket, HOST, PATH, 0, -1);
+		else printf("Failed to create TCP socket!\n");
+
+                bzero(header, MAX_MESSAGE_SIZE);
+		headersize = 0;
+		inHeader = 1;
+		readBytes = 0;
+
+		// parse the HTTP response from the server to find the info that we need
+                while ((readBytes = read(tcpSocket, responsefromserver, MAX_MESSAGE_SIZE)) > 0)
+		  {
+                    isTEXTfile = FALSE;
+                    isHTMLfile = FALSE;
+
+		    printf("Got first %d bytes of server response. Analyzing HTTP header now...\n", readBytes);
+                    while (inHeader == 1)
+		      {
+                        char *boop = responsefromserver;
+
+			// scan linearly through all headers until the double CR-LF is seen
+                        for (i = 0; i < readBytes - 4; i++)
+			  {
+                            if (strncmp(boop + i, "\r\n\r\n", 4) == 0)
+			      {
+                                // string parsing to isolate the relevant headers that we need
+                                strncpy(header, responsefromserver, i);
+                                char *oneheaderline = strtok(header, "\r\n");
+                                do
+				  {
+                                    // Parse the content length out of the HTTP response header
+                                    if (strstr(oneheaderline,"Content-Length: "))
+				      {
+                                        sscanf(oneheaderline, "Content-Length: %s\n", contentlength);
+                                        printf("\nExtracted Content-Length = \"%s\"\n", contentlength);
+                                        length = atoi(contentlength);
+				      }
+                                    // Parse content type out of the HTTP response header to check for HTML
+                                    if (strstr(oneheaderline,"Content-Type: "))
+				      {
+                                        sscanf(oneheaderline, "Content-Type: %s\n",contentType);
+                                        printf( "\nExtracted Content-Type = \"%s\"\n",contentType);
+					//check for plain text file
+                                        contentType[10]= '\0';
+                                        strcpy(TEMP, contentType);
+                                        if (strcmp(TEMP, "text/plain")== 0)
+                                            isTEXTfile = TRUE;
+					else isTEXTfile = FALSE;
+					//check for HTML
+                                        contentType[9]= '\0';
+                                        strcpy(TEMP, contentType);
+                                        if (strcmp(TEMP, "text/html")== 0)
+                                            isHTMLfile = TRUE;
+					else isHTMLfile = FALSE;
+				      }
+				  }
+				while ((oneheaderline = strtok(NULL, "\r\n")));
+                                headersize += i;
+				// save this header to use later
+				strncpy(responseheader, responsefromserver, headersize+4);
+				printf("Saved response header of size %d bytes\n", headersize);
+				puts(responseheader);
+                                inHeader = 0; // set a flag that header has been grabbed
+                                i = readBytes;    // hack to break out of for loop.
+			      }
+			  } // end loop for i on readbytes
+		      } // end while inHeader
+
+                    //if the Web page is HTML or text, then process it, else leave it alone 
+                    if( (isHTMLfile == TRUE ) || (isTEXTfile == TRUE) )
+		      {
+			int low, high, hlen;
+			printf( "That is a TEXT or HTML file! Processing it...\n");
+			low = 0;
+			high = length - 1;
+
+			// get the Web page again, since the parsing might have been destructive
+			tcpSocket = makeTCPconn(HOST, HTTP_PORT);
+			if( tcpSocket > 0 )
+			  {
+			    bzero(responsefromserver, MAX_MESSAGE_SIZE);
+			    sendHTTPrequest(tcpSocket, HOST, PATH, low, high);
+			  }
+			else printf("Failed to create that TCP socket!\n");
+
+			readBytes = read(tcpSocket, responsefromserver, MAX_MESSAGE_SIZE);
+			printf("Got %d bytes on that HTTP transaction\n", readBytes);
+#ifdef VERBOSE
+			puts(responsefromserver);
+#endif			
+			// Find where header ends and body begins
+			for( hlen = 0; hlen < readBytes; hlen++ )
+			  {
+			    if( (responsefromserver[hlen] == '\r') &&
+				(responsefromserver[hlen+1] == '\n') &&
+				(responsefromserver[hlen+2] == '\r') &&
+				(responsefromserver[hlen+3] == '\n') )
+			      {
+				break;
+			      }
+			  }
+			// Put the data bytes where they need to be
+			printf("Saving header; copying %d bytes to %d\n",
+			       readBytes-(hlen+4), low);
+			strncpy(&responsebody[low], &responsefromserver[hlen+4], readBytes-(hlen+4));
+
+			databytes = readBytes-(hlen+4);
+			while( databytes < length )
+			  {
+			    printf("Got %d of %d bytes so far. Asking for more data...\n", databytes, length);
+			    readBytes = read(tcpSocket, responsefromserver, MAX_MESSAGE_SIZE);
+			    printf("Got %d bytes on that HTTP transaction\n", readBytes);
+			    low = databytes;
+			    strncpy(&responsebody[low], &responsefromserver[0], readBytes);
+			    databytes += readBytes;
+			    high += readBytes;
+			  }
+
+			// construct and send the full response now
+			bzero(responsetoclient, MAX_MESSAGE_SIZE);
+			strncpy(responsetoclient, responseheader, headersize+4);
+			strncpy(&responsetoclient[headersize+4], responsebody, length);
+			responsetoclient[length+headersize+4] = '\0';
+
+#ifdef VERBOSE
+			printf("Built the following %d byte response: \n", headersize+4+length);
+			puts(responsetoclient);
+#else
+			printf("Built a response with %d bytes\n", headersize+4+length);
+#endif			
+			send(childsocket, responsetoclient, headersize+4+length, 0);
+		      }
+		    else
+		      {
+			//send data back to the client Web browser normally
+			send(childsocket, responsefromserver, readBytes, 0);
+		      }
+		    // clear out message strings again to be safe?
+		    bzero(requestfromclient, MAX_MESSAGE_SIZE);
+		    bzero(responsefromserver, MAX_MESSAGE_SIZE);
+
+		  } // end while readbytes > 0
+
+	      } // end while recv on childsocket > 0
+	    
+	    // Client is no longer sending messages, so say goodbye!
+	    signal(SIGTERM, forced);
+	    signal(SIGINT, forced);
+	    close(childsocket);
+	    exit(0);
+	  } // end of child process case (pid == 0)
+      } // end while(1)
+
+    return 0;
+  } // end main
+
+// Use TCP to connect to the server and send an HTTP GET request 
+int makeTCPconn(char host[], int port)
+  {
+    struct sockaddr_in serveraddr;
+    struct hostent *server;
+
+    int tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (tcpSocket < 0)
+      printf("Error opening socket");
+    else printf("Successfully opened TCP socket\n");
+
+    // get the server info
+    server = gethostbyname(host);
+    if (server == NULL )
+      printf("gethostbyname() failed\n");
+    else printf("Web server = %s\n", server->h_name);
+	
+    // Initialize socket structure
+    bzero((char *) &serveraddr, sizeof(serveraddr));
+    serveraddr.sin_family = AF_INET;
+    bcopy((char *) server->h_addr, (char *) &serveraddr.sin_addr.s_addr, server->h_length);
+    serveraddr.sin_port = htons(HTTP_PORT);
+
+    // Try to connect using TCP handshake
+    if (connect(tcpSocket, (struct sockaddr *) &serveraddr, sizeof(serveraddr))< 0)
+      perror("Error creating TCP socket with connect()\n");
+
+    return tcpSocket;
+  }
+
+// Use TCP to send an HTTP range request 
+int sendHTTPrequest(int socket, char host[], char path[], int lowbyte, int highbyte)
+  {
+    char request[MAX_MESSAGE_SIZE];
+
+    // Construct the HTTP request 
+    bzero(request, MAX_MESSAGE_SIZE);
+    sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", path, host);
+
+    // Now ask the server for the Web page using the HTTP request
+    if (send(socket, request, strlen(request), 0) < 0)
+      perror("Error sending HTTP request over TCP socket\n");
+
+    return 0;
+  }
+
+// Signal handler to do exit when weird terminations happen
+void forced()
+  {
+    exit(-1);
+  }

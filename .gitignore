@@ -1,0 +1,7 @@
+*.class
+2021 - Fall/ENCM 511/*/.generated_files*
+2021 - Fall/ENCM 511/*/build*
+2021 - Fall/ENCM 511/*/debug*
+2021 - Fall/ENCM 511/*/dist*
+*cmake-build-debug*
+*.idea*

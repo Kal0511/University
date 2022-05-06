@@ -1,0 +1,27 @@
+
+Answers to Questions
+
+
+1. Which of the customers has the most items? How many items do they have?
+
+Customer #8 has the most items, with 457.
+
+2. When starting at the leaf level of the tree, which basket of goods takes the most time to scan? How many time slots does it require?
+
+They all take 1024 time slots, regardless of the number of items.
+
+3. When starting at the root level of the tree, which basket of goods takes the most time to scan? How many time slots does it require?
+
+Customer #8 needs 997 time slots for scanning.
+
+4. When starting at the root level of the tree, which basket of goods takes the least time to scan? How many time slots are needed?
+
+Customer #1 needs only 35 time slots for scanning.
+
+5. When starting at the root level of the tree, which basket of goods generates the most collisions during scanning? How many collisions occur?
+
+Customer #8 generates 498 collisions.
+
+6. When starting at the root level of the tree, which basket of goods generates the highest proportion of successful slots (i.e., efficiency) during scanning?
+
+Customer #8 generates the highest efficiency, at 45.28%.

@@ -1,0 +1,7 @@
+text1.txt
+Total number of words in file: 11
+Total number of unique words in file: 4
+
+text2.txt
+Total number of words in file: 105
+Total number of unique words in file: 75

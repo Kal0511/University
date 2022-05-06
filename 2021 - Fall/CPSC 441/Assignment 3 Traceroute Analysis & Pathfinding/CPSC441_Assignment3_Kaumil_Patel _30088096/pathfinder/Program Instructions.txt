@@ -1,0 +1,16 @@
+Pathfinder
+made by Kaumil Patel 30088096
+
+Pathfinder implements dijkstra's search 
+It load a map of canada which is used to find the shortest path
+
+#compile command
+g++ pathfinder.cpp -o pathfinder
+
+#run command
+./pathfinder
+
+#client menu
+Menu:
+1 - Search							// Asks for source and destination and performs dijkstra's search
+2 - Quit							// Closes program

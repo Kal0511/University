@@ -1,0 +1,44 @@
+
+There are many possible "observations" that might emerge
+in the writeups from students, based on their results.
+Here are a few examples:
+
+ - starting at the LEAF level takes a constant (deterministic)
+   number of probes, for a given value of K
+
+ - starting at the ROOT level takes a variable number
+   of probes, depending on the number of items, and which ones
+
+ - the ROOT level is always faster than the LEAF level
+   on the examples given, but the opposite might be true
+   if there were even more items in a customer's basket (e.g., 700)
+
+ - if the basket has every possible item from the store,
+   then LEAF level is 100% efficient, and ROOT is about 50%
+
+ - in general, more items means more time slots and better efficiency,
+   but it also depends on exactly where the items are in the tree
+
+ - a worst case for ROOT level is having adjacent items
+   like 0 and 1 at the leaf level, and nothing else. You have
+   to probe all the way down to the leaf level to resolve this.
+
+ - the number of successful probes is always the same as the
+   number of items in the basket (this one is pretty obvious)
+
+ - on the given baskets of goods, the number of collisions
+   always exceeds the number of successes
+
+ - the proposed MAC protocol for RFID scanning from the root
+   is very scalable (i.e., costs increase logarithmically with
+   the catalogue size M). For the leaf level, costs are linear
+   with M.
+
+ - if the common case is customers with very few items,
+   then the ROOT level is always better, and very efficient
+
+ - if a "time slot" were 10 milliseconds, for example,
+   then customer 8 can be scanned in only 9.97 seconds.
+   This is way faster than using a human cashier. The leaf
+   level would always take 10.24 seconds, regardless of the
+   number of items that customers buy.

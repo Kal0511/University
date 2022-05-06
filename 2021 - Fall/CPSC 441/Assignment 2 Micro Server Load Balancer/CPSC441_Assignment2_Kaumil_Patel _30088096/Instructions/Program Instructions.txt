@@ -1,0 +1,55 @@
+Micro Service Instructions
+made by Kaumil Patel 30088096
+
+The application was build and tested on my personal laptop. Wireshark and telnet was used for testing and debugging the porgram.
+
+The client program is able to talk to the main server and provides safe voting service, currency conversion service and english to french translation service
+
+The main server facilitates communication between the micro services and client
+
+The translator service loads in the translation data from a txt files and set up a loop which serves incoming requests from the main server
+
+The conversion service sets up a loop and serves the main server's requests - uses predefined conversion values for each currency
+
+The voting service allows viewing the list of candidates, encrypted voting, and encrypted viewing reqults
+
+#config numbers are set at the top of each file including ip addresses and port numbers
+
+
+#compile command for main server
+g++ server.cpp -o server
+
+#run command for main server
+./server
+
+
+#compile command for client
+g++ client.cpp -o client
+
+#run command for client
+./client [ip address of server] [port of server]
+
+
+#compile command for micro services and run command
+g++ currencyConverter.cpp -o currencyConverter
+./currencyConverter
+
+g++ translator.cpp -o translator
+./translator
+
+g++ voting.cpp -o voting
+./voting
+
+
+#client menu
+
+Proxy Menu:
+1 - Translator Service				// asks for english word to be translated
+2 - Currency Converter Service		// asks amount of money and final currency - command: $[amount] CAD [USD or EUR or GBP or BTC]
+3 - Voting Service					// opens voting menu
+4 - Quit							// closes connection from server
+
+Voting Menu:
+1 - get list						// gets the list of candidates 
+2 - vote							// asks for candidate id and voting option - a time limit can be set
+3 - results							// displays the results of the election - time can be set so results are only show afterwards
