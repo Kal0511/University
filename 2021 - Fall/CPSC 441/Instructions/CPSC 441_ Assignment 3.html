@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0075)https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignment3.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="./CPSC 441_ Assignment 3_files/cpsc441.css" rel="stylesheet" type="text/css">
+
+<title>CPSC 441: Assignment 3</title>
+
+</head><body><table width="80%">
+<tbody><tr>
+  <td align="center"><h1>CPSC 441: Computer Networks</h1></td>
+</tr>
+<tr><td align="center"><h3>Fall 2021</h3></td></tr>
+</tbody></table>
+
+<div class="container">
+
+<div class="leftside">
+
+<ul>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/index.html">CPSC 441 Home</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/slides.html">Course Content</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/textbook.html">Textbook</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/instructor.html">Instructor</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/tutorials.html">Tutorials</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignments.html">Assignments</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/exams.html">Exams</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/grading.html">Grading</a></li>
+<li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/links.html">Useful Links</a></li>
+</ul>
+
+</div>
+
+<div class="content">
+
+<h1>Assignment 3: Traceroute Analysis (40 marks)</h1>
+
+Due: <b>Friday, November 19, 2021</b> (11:59pm)
+
+<h2>Learning Objectives</h2>
+
+<p>
+The purpose of this assignment is to learn about Internet routing,
+and some of the tradeoffs involved in route selection.
+You will do so by using <b>traceroute</b> on a Linux system
+(or <b>tracert</b> on a Windows system) to
+study several real Internet routing paths. You will also compare a
+subset of your results to those from a classic graph-based
+algorithm for shortest-path routing to see what differences (if any) arise.
+</p>
+
+<h2>Background</h2>
+
+<p>
+Internet routing is highly complex, involving many different tradeoffs
+between distance, time, load, connectivity, policy, and peering
+agreements between different network providers. On a Linux system,
+<b>traceroute</b> is a well-known utility for studying Internet
+routing paths between different sources and destinations. It provides
+a detailed report of per-hop information about routers, IP addresses,
+and observed network latencies. On Windows systems, <b>tracert</b> provides
+similar functionality.
+</p>
+<p>
+Routes may differ depending on where traceroute is originated from.
+For example, the route from Calgary to Halifax differs depending on whether
+you trace it
+<a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass3/uofc-dal.txt">from the UCalgary network</a>
+or
+<a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass3/home-dal.txt">from home (on Shaw)</a>.
+In these examples, one path uses the CANARIE national network, while one does not.
+</p>
+<p>
+There are several classic graph algorithms for computing shortest paths.
+These include Dijkstra's algorithm (discussed in class), Warshal's algorithm,
+Prim's algorithm, and several others. These algorithms often make simplifying
+assumptions about the network, including a static topology, and fixed costs
+for the network links. Some may treat the graph
+as directed (i.e., one-way links), and others as undirected (i.e., symmetric
+two-way links). Such algorithms provide an abstracted view of Internet routing.
+</p>
+
+<h2>Your Task</h2>
+
+<p>
+Your task is to study real Internet routing paths for 8 different
+destinations of your own choosing (details below). You will also write a program
+in C or C++ to implement a classic graph-based routing algorithm on a small
+network topology of Canada, and compare the algorithm's routes to real Internet paths.
+</p>
+
+<p>
+Choose 8 destinations on the Internet, subject to the following constraints.
+First, choose your favourite town or city in the Province of Alberta,
+other than the City of Calgary.
+Next, choose your three favourite destinations in Canada, other than those in Alberta.
+Next, choose your two favourite destinations in the USA.
+Finally, choose your two favourite international destinations outside North America.
+For each of your chosen destinations, identify a Web site hosted at
+that location, and enter the full domain name of the Web site and its IP address
+into a table like the one below. Use any convenient (and free) IP geo-mapping service to
+confirm the location of that IP address, and show this information in the table.
+</p>
+
+ <table>
+  <tbody><tr>
+    <th>Category</th>
+    <th>Destination</th>
+    <th>DomainName</th>
+    <th>IP Address</th>
+    <th>Location</th>
+    <th>When(UC)</th>
+    <th>NumHops</th>
+    <th>BaseRTT</th>
+    <th>When(Home)</th>
+    <th>NumHops</th>
+    <th>BaseRTT</th>
+  </tr>
+  <tr>
+    <td>AB1</td>
+    <td>Place</td>
+    <td>foozle.ab.ca</td>
+    <td>333.444.555.666</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>CAN1</td>
+    <td>Place</td>
+    <td>foozlebop.ca</td>
+    <td>555.444.333.222</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>CAN2</td>
+    <td>Place</td>
+    <td>zigglepuff.ca</td>
+    <td>777.333.222.111</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>CAN3</td>
+    <td>Place</td>
+    <td>shinything.ca</td>
+    <td>999.444.000.222</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>US1</td>
+    <td>Place</td>
+    <td>groppy.com</td>
+    <td>321.456.300.200</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>US2</td>
+    <td>Place</td>
+    <td>anything.edu</td>
+    <td>789.222.111.444</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>INTL1</td>
+    <td>Place</td>
+    <td>yummybagels.fr</td>
+    <td>867.5.30.90</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+  <tr>
+    <td>INTL2</td>
+    <td>Place</td>
+    <td>safebrowsing.zz</td>
+    <td>432.432.432.432</td>
+    <td>Actual</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+    <td>day/time</td>
+    <td>count</td>
+    <td>msec</td>
+  </tr>
+</tbody></table> 
+
+<p>
+Choose a date and time for your traceroute data collection.
+From the UCalgary network, do a traceroute to each of your destinations, and
+record the output of each. Make sure that all of these are done from the same UCalgary
+source IP address, and that they are collected within a few minutes of each other.
+From your home network, do a traceroute to each of your destinations, and
+record the output of each. Make sure that all of these are done from the same home
+source IP address, and that they are collected within a few minutes of each other.
+(It is preferable that your UCalgary traceroutes and your home network traceroutes are done
+on the same day and at a similar time, but not strictly required.)
+Summarize your results by completing the remaining columns in the table above.
+</p>
+
+<h2>Programming Requirements</h2>
+
+<p>
+Choose your favourite shortest-path routing algorithm
+(e.g., Dijkstra, Prim, Warshal, etc.), and
+write a C or C++ program that implements that algorithm.
+</p>
+<p>
+Run your graph algorithm on this simplified
+<a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/ass3/canadamap.txt"> map of Canada</a>.
+which shows the approximate driving time between different cities,
+as identified by their three-letter airport codes.
+Please treat the travel time as the weight for each link (lower is better).
+</p>
+
+<p>
+Your program should read in the topology file and
+construct an internal representation of the network graph,
+using an appropriate data structure. 
+All node names are three letters, using upper-case alphabetic characters.
+All travel times are positive integers.
+</p>
+
+<p>
+Compute the results for the shortest-path route from Calgary to each
+of CAN1, CAN2, and CAN3 (or to the nearest airport city if
+your chosen destination does not appear in the Canada map).
+Report your results in tabular form like this:
+</p>
+
+ <table>
+  <tbody><tr>
+    <th>Destination</th>
+    <th>Cost</th>
+    <th>Hops</th>
+    <th>Shortest Path</th>
+  </tr>
+  <tr>
+    <td>CAN1</td>
+    <td>d1</td>
+    <td>n1</td>
+    <td>YYC--&gt;ABC--&gt;DEF</td>
+  </tr>
+  <tr>
+    <td>CAN2</td>
+    <td>d2</td>
+    <td>n2</td>
+    <td>YYC--&gt;RST--&gt;UVW--&gt;XYZ</td>
+  </tr>
+  <tr>
+    <td>CAN3</td>
+    <td>d3</td>
+    <td>n3</td>
+    <td>YYC--&gt;KLM</td>
+  </tr>
+</tbody></table> 
+
+<h2>Grading Rubric</h2>
+
+<p>
+When you are finished, submit your answers and your code in electronic form to your TA, via D2L.
+Grading will be based on your traceroute results (16 marks total, with 1 mark for each traceroute output),
+your tabular summary (4 marks), a properly documented shortest-path routing program (10 marks),
+your table of Canadian routing results using the algorithm (6 marks), and
+a brief (maximum one page) written summary (4 marks) of your main observations
+about Internet routing.
+(There is NO DEMO required for this assignment.)
+</p>
+
+<h2>Bonus (optional)</h2>
+<p>
+  Up to 4 bonus marks are available for building an AS-level map showing
+  connectivity between Calgary and your chosen Canadian routing destinations.
+  That is, start with a reasonable sketch for a map of Canada, and augment it with a
+  list of the ASes that are traversed along the way to each destination.
+  Show the name and number of each AS, and an estimate of
+  the Internet link speed (bandwidth) and (one-way) propagation delay for each AS hop.
+  You may find the <a href="http://www.routeviews.org/"> RouteViews</a> tool or the
+  <a href="https://www.peeringdb.com/">Peering DB</a> particularly helpful for this.
+  (Please do not run pathchar or any speed test tools to determine this information!)
+</p>
+
+<h2>Tips</h2>
+<ul>
+<li>
+There is surprisingly little programming involved in this assignment,
+but there is still some thought required for doing it well.
+Feel free to start on it early if you want, or wait until we have covered
+Internet routing algorithms in class.
+</li>
+<li>
+Please be judicious in your use of traceroute. It is an active measurement tool
+that generates extra network packet traffic for Internet routers. We do not want you running
+it hundreds of times, particularly since there are 250 students doing this assignment.
+Please choose your destinations wisely, and conduct your traceroute tests
+for each source-destination pair only once, if possible.
+At most, a few dozen traceroutes should suffice for your assignment.
+</li>
+<li>
+For the programming part, focus first on making sure that your program can read in 
+and model the network topology properly.
+</li>
+<li>
+Next focus on getting your routing algorithm working.
+Do sufficient testing on small cases
+to make sure that it is working properly.
+</li>
+<li>
+Clearly, there is no single correct answer for this assignment.
+Report your experimental results as empirically observed,
+and use them to compare and contrast with the algorithmic results.
+With luck, there should be some interesting similarities and differences seen.
+</li>
+</ul>
+
+</div>
+
+</div></body></html>

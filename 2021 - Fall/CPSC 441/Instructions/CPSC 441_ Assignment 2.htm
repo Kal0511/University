@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0075)https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignment2.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="./CPSC 441_ Assignment 2_files/cpsc441.css" rel="stylesheet" type="text/css">
+
+<title>CPSC 441: Assignment 2</title>
+
+</head><body><table width="80%">
+  <tbody><tr>
+    <td align="center">
+      <h1>CPSC 441: Computer Networks</h1>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <h3>Fall 2021</h3>
+    </td>
+  </tr>
+</tbody></table>
+
+<div class="container">
+
+  <div class="leftside">
+
+    <ul>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/index.html">CPSC 441 Home</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/slides.html">Course Content</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/textbook.html">Textbook</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/instructor.html">Instructor</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/tutorials.html">Tutorials</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/assignments.html">Assignments</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/exams.html">Exams</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/grading.html">Grading</a></li>
+      <li><a href="https://pages.cpsc.ucalgary.ca/~carey/CPSC441/archive/2021/links.html">Useful Links</a></li>
+    </ul>
+
+  </div>
+
+  <div class="content">
+
+    <h1>Assignment 2: Transport Protocols (40 marks)</h1>
+
+    Due: <b>Friday, October 22, 2021</b> (11:59pm)
+
+    <h2>Learning Objectives</h2>
+
+    <p>
+      The purpose of this assignment is to learn about client-server network applications,
+      TCP and UDP protocols, and data representation.
+      In particular, you will use a combination of TCP and UDP data transfer services
+      to implement client-server programs (in C/C++) that provide different services to users.
+    </p>
+
+    <h2>Background Scenario</h2>
+    <p>
+      TCP (Transmission Control Protocol) and UDP (User Datagram Protocol)
+      are transport-layer protocols used for sending data over the Internet.
+      They both build on top of the Internet Protocol (IP).
+      TCP is a connection-oriented protocol and UDP is a connection-less protocol.
+      TCP establishes a connection between a sender and receiver before data can be sent.
+      UDP does not establish a connection before sending data.
+      TCP is a reliable data transfer protocol.
+      TCP and UDP are not the only protocols that work on top of IP. However, they are the most widely used.
+    </p>
+
+    <p>
+      The modern Internet offers many different online services for users,
+      such as language translation, currency conversion, mortgage calculators,
+      time zone conversion, and many more. In fact, the current trend is toward
+      service chaining of virtualized network functions, which we will see much
+      later in the semester when we discuss software-defined networking.
+    </p>
+
+    <p>
+      There is an old saying in Computer Science that "any problem can
+      be solved with another level of indirection".
+      In this assignment, we will apply this principle by implementing
+      some simple "micro-services" accessible from an "Indirection Server".
+    </p>
+
+    <h2>Your Task</h2>
+
+    <p>
+      Your primary task in this assignment is to build a network-based application
+      that offers several different data transformation services to users. Each of
+      these micro-services will run as its own micro-server, and you will use an
+      "Indirection Server" to coordinate each session.
+    </p>
+
+    <p>
+      <b>Client</b>.
+      There is only one Client program in this assignment.
+      The client makes a <i>TCP</i> connection with the Indirection Server.
+      The Client's interaction with the Indirection Server will involve connecting to the server (by getting Indirection Server's
+      IP and Port number via terminal),
+      and then entering a loop for interaction with the server (you shortly will see the list of interactions).
+      Within the loop, the client can specify which service is desired.
+    </p>
+
+    <p>
+      <b>Indirection Server</b>.
+      The Indirection Server uses <i>TCP</i> as its transport-layer protocol, for reliable data transfer with the client.
+      The Indirection Server receives a command from the client and then communicates with the appropriate micro-service
+      via <i>UDP</i> to perform the user's request, prior to returning the final result data back to the client via TCP.
+      The client is able to request several services in a session. When the client is finished with all requests, the
+      session with the Indirection Server ends.
+    </p>
+
+    <p>
+      <b>Micro Servers</b>.
+      The micro-services will be offered via UDP-based communication,
+      which is simple and fast, but unreliable.
+      There will be three different micro-services running,
+      each on a different port. The Indirection Server needs to know which
+      services are running where (i.e., IP address and port),
+      and send the data to the correct place for each data transformation request.
+    </p>
+
+    <p>
+      The specific data transformation micro-services that you need to implement are:
+    </p><ol>
+      <li>
+        <p>
+          <b>Translator Service</b>: This micro-server translates one word from English to French.
+          For example, the message "Hello" would become "Bonjour".
+          Your micro-service should support at least 5 English words.
+          For simplicity, you can ignore the French accent marks. You should choose the English words for your micro-service.
+        </p><p>
+          <code>
+          &gt; Enter an English word: &lt;user input&gt;
+          <br>
+          &gt; French translation: &lt;user input translated to French&gt;
+         </code>
+        </p>
+        <p></p>
+
+      </li>
+      <li>
+        <p>
+          <b>Currency Converter Service</b>:
+	  This micro-service receives three inputs from the user: 
+          1) amount of money (an integer number), 
+          2) the source currency, and 
+          3) the destination currency. 
+          For example, it receives "$10 CAD US" from the user, and it converts 10 Canadian dollars to $7.90 US dollars. 
+          This micro-service supports converting the Canadian Dollar to US Dollar, Euro, British Pound, and Bitcoin currencies. 
+          You can use pre-defined reasonable values as an approximation of currency exchange rates (e.g., 0.79 for CAD to US dollars).
+        </p>
+      </li>
+      <li>
+        <p>
+          <b>Voting</b>: This micro-service performs three tasks.
+        </p><ul>
+          <li>
+            <p>
+              Show Candidates. Your micro-server returns a list of names of the (fictional) candidates, along with their assigned ID number, upon the client's request. 
+              You can define at least four candidates, and each has a unique Integer ID number.
+
+            </p>
+          </li>
+          <li>
+            <p>
+              Secure voting. This service receives a user's vote and updates the voting result.
+              Here is the voting scenario: first, a user requests to vote.
+              Then the Indirection Server asks the voting micro-server for an encryption key.
+              This encryption key is only one digit like '4'.
+              The micro-service sends the key as a response to the Indirection Server, and the Indirection Server delivers that
+              key to the client.
+              Then the client machine encrypts the candidate's ID with the encryption key.
+              We implement a simple encryption function. It multiplies the candidate's ID with the encryption key. 
+              Your system can encode each vote by <code>[&lt;vote&gt; * &lt;key&gt;]</code>, and decode it by
+              [<code>&lt;encoded vote&gt; / &lt;key&gt;</code>]. <br>
+              For example, if the encryption key is '4', and the candidate's ID is '3', the encrypted message is 12. 
+              Use the same key to decode the vote. 
+              <br>
+              
+              Then the Client sends the encrypted vote to the Indirection Server.
+              The Indirection Server forwards it to the voting micro-server, and the micro-service decrypts the vote and
+              updates the voting result.
+            </p>
+          </li>
+          <li>
+            <p>
+              Voting summary. It returns the voting results.
+            </p>
+          </li>
+        </ul>
+        <p></p>
+        <p>
+          <b>Notes</b>. 
+          <br> - A Client can request results only after he/she votes.
+          <br> - You should create an imaginary list of candidates with a pre-assigned number of votes.
+        </p>
+      </li>
+
+
+    </ol>
+
+    <p>
+      Your Indirection Server should also do something reasonable
+      if no response is received from one of the UDP-based micro-services
+      within a certain time limit.
+    </p>
+
+    <h3>Testing</h3>
+    First, run all three micro-servers. Then run your Indirection Server. The Indirection Server should have the IP address and
+    port numbers of the micro-servers. Run the Client program by using Indirection Server IP address and port number
+    through the command line. Your Client program should make a TCP connection to the Indirection Server. 
+    Then your Client program shows a list of available services to the user. 
+    After receiving services, the Client program should be able to close the connection.
+
+    <h2>Grading Scheme</h2>
+
+    <p>
+      The grading scheme for the assignment is as follows:
+    </p>
+    <ul>
+      <li>
+        <b>10 marks</b>
+        for the design and implementation of the main TCP-based client-server solution to this problem.
+        Your implementation should include
+        proper use of TCP and UDP socket programming in C or C++,
+        and reasonably commented code.
+      </li>
+      <li>
+        <b>4 marks</b>
+        for a proper implementation of Translation Service.
+      </li>
+      <li>
+        <b>4 marks</b>
+        for a proper implementation of Currency Converter Service.
+      </li>
+      <li>
+        <b>8 marks</b>
+        for a proper implementation of the Voting Service.
+      </li>
+      <li>
+        <b>4 marks</b>
+        for a clear and concise user manual (at most 1 page)
+        that describes how to compile, configure, and
+        use your solution.
+        Also, describe where and how your testing was done
+        (e.g., home, university, office), what works, and what does not. Be honest!
+      </li>
+      <li>
+        <b>10 marks</b>
+        for a suitable demonstration of your Indirection Server
+        to your TA in your tutorial section, or to your professor at a mutually convenient time.
+        All demos will be done during the week of November 1st.
+      </li>
+    </ul>
+
+    <p>
+      When you are finished,
+      please submit your assignment solution via D2L.
+      Your submission should include your source code and user manual documentation.
+    </p>
+
+    <p>
+      <b>Bonus (optional):</b>
+      Up to 4 bonus marks are available if your voting system works based on universal time.
+      For example, users are able to vote only before a specific time, and see the results only after that given time.
+    </p>
+
+    <h2>Tips</h2>
+
+    <ul>
+      <li>
+        On a single machine, you can do your initial testing using the loopback interface.
+      </li>
+      <li>
+        For the micro-services, you can start by creating a simple echo micro-server.
+        Once it is working, you can make the small changes required to create
+        the other services. Test them individually.
+      </li>
+      <li>
+        Once you are testing on a real network interface,
+        you may find Wireshark particularly useful to look at the network packets
+        being sent and received by your application (i.e., ports, size, data content).
+      </li>
+      <li>
+        Please be cognizant of the data types that you are working with. For example,
+	the messages that you send back and forth are likely to be ASCII strings,
+	but some of the micro-services involve manipulating numerical values.
+	Make sure you know how to convert between different data types when needed.
+      </li>
+    </ul>
+
+  </div>
+
+</div>
+
+
+</body></html>
