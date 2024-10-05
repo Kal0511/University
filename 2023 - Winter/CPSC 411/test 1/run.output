@@ -1,0 +1,672 @@
+Run started on Sat Feb 25 18:05:41 2023
+
+Hostname: laptop
+
+-------------------------------------------------------------------------------
+Running make |
+--------------
+
+% /usr/bin/make
+
+STDOUT:
+flex --c++ -o scanner.cc scanner.l
+bison parser.yy -o parser.cc
+g++ scanner.cc parser.cc main.cpp -o golf -Wall -g
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Locating GoLF compiler |
+------------------------
+
+Compiler will be run as ./golf
+
+-------------------------------------------------------------------------------
+Test: too few arguments |
+-------------------------
+
+% ./golf
+
+STDOUT:
+
+
+STDERR:
+Error: File Argument Not Found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: too many arguments |
+--------------------------
+
+% ./golf /dev/null /dev/zero
+
+STDOUT:
+
+
+STDERR:
+Error: Too Many Arguments
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nonexistent file |
+------------------------
+
+% ./golf /i/do/not/exist
+
+STDOUT:
+
+
+STDERR:
+Error: Can't open file
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: empty file |
+------------------
+
+% ./golf test 1/scan.t1
+
+STDOUT:
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: comment ending in EOF |
+-----------------------------
+
+% ./golf test 1/scan.t2
+
+STDOUT:
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: comment only |
+--------------------
+
+% ./golf test 1/scan.t3
+
+STDOUT:
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: illegal whitespace |
+--------------------------
+
+% ./golf test 1/scan.t4
+
+STDOUT:
+
+
+STDERR:
+Warning: illegal character '\v' at line 2
+Warning: illegal character '\f' at line 3
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: legal whitespace |
+------------------------
+
+% ./golf test 1/scan.t5
+
+STDOUT:
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "}" with no previous token |
+----------------------------------
+
+% ./golf test 1/scan.t6
+
+STDOUT:
+Operator: '}' at line 1
+Operator: ';' at line 1
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: the carat schtick |
+-------------------------
+
+% ./golf test 1/scan.t7
+
+STDOUT:
+
+
+STDERR:
+Warning: illegal character '^' at line 2
+Warning: illegal character '^' at line 3
+Warning: illegal character '^' at line 4
+Warning: illegal character '^' at line 5
+Warning: illegal character '^' at line 6
+Warning: illegal character '^' at line 7
+Warning: illegal character '^' at line 8
+Warning: illegal character '^' at line 9
+Warning: illegal character '^' at line 10
+Warning: illegal character '^' at line 11
+Error: too many warnings
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: NUL character |
+---------------------
+
+% ./golf test 1/scan.t8
+
+STDOUT:
+
+
+STDERR:
+Warning: illegal character 'NULL' at line 2
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: non-7-bit chars |
+-----------------------
+
+% ./golf test 1/scan.t9
+
+STDOUT:
+
+
+STDERR:
+Warning: non ascii character at line 2
+Warning: non ascii character at line 2
+Warning: non ascii character at line 2
+Warning: non ascii character at line 2
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: whitespace inside && token pair |
+---------------------------------------
+
+% ./golf test 1/scan.t10
+
+STDOUT:
+
+
+STDERR:
+Error: bitwise AND not supported at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: whitespace inside || token pair |
+---------------------------------------
+
+% ./golf test 1/scan.t11
+
+STDOUT:
+
+
+STDERR:
+Error: bitwise OR not supported at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: leading 0 on number |
+---------------------------
+
+% ./golf test 1/scan.t12
+
+STDOUT:
+Number: 0600 at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: comment inside && token pair |
+------------------------------------
+
+% ./golf test 1/scan.t13
+
+STDOUT:
+
+
+STDERR:
+Error: bitwise AND not supported at line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: illegal characters |
+--------------------------
+
+% ./golf test 1/scan.t14
+
+STDOUT:
+
+
+STDERR:
+Warning: illegal character '\' at line 3
+Warning: illegal character '^' at line 3
+Warning: illegal character '#' at line 3
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: legit token salad |
+-------------------------
+
+% ./golf test 1/scan.t15
+
+STDOUT:
+Operator: '+' at line 3
+Operator: '-' at line 4
+Operator: '*' at line 5
+Operator: '/' at line 6
+Operator: '%' at line 7
+Operator: '(' at line 8
+Operator: ')' at line 9
+Operator: ';' at line 9
+Operator: '{' at line 10
+Operator: ';' at line 11
+Operator: '}' at line 11
+Operator: ';' at line 11
+Operator: ';' at line 12
+Operator: ',' at line 13
+Operator: '!' at line 17
+Operator: '!=' at line 17
+Operator: '=' at line 18
+Operator: '==' at line 18
+Operator: '<' at line 19
+Operator: '<=' at line 19
+Operator: '>' at line 20
+Operator: '>=' at line 20
+Operator: '>' at line 22
+Operator: '=' at line 22
+Operator: '&&' at line 26
+Operator: '||' at line 27
+Keyword: break at line 31
+Operator: ';' at line 31
+Keyword: else at line 32
+Keyword: for at line 33
+Keyword: func at line 34
+Keyword: if at line 35
+Keyword: return at line 36
+Operator: ';' at line 36
+Keyword: var at line 37
+Identifier: Break at line 41
+Operator: ';' at line 41
+Identifier: switch at line 42
+Operator: ';' at line 42
+Identifier: case at line 43
+Operator: ';' at line 43
+Identifier: goto at line 44
+Operator: ';' at line 44
+Identifier: continue at line 45
+Operator: ';' at line 45
+Identifier: while at line 46
+Operator: ';' at line 46
+Identifier: prints at line 47
+Operator: ';' at line 47
+Identifier: printi at line 48
+Operator: ';' at line 48
+Identifier: printb at line 49
+Operator: ';' at line 49
+Identifier: printc at line 50
+Operator: ';' at line 50
+Identifier: halt at line 51
+Operator: ';' at line 51
+Identifier: getchar at line 52
+Operator: ';' at line 52
+Identifier: true at line 53
+Operator: ';' at line 53
+Identifier: bool at line 54
+Operator: ';' at line 54
+Identifier: false at line 55
+Operator: ';' at line 55
+Identifier: string at line 56
+Operator: ';' at line 56
+Identifier: int at line 57
+Operator: ';' at line 57
+Identifier: main at line 58
+Operator: ';' at line 58
+Identifier: abcdef at line 59
+Operator: ';' at line 59
+Identifier: abc123 at line 60
+Operator: ';' at line 60
+Identifier: _ at line 61
+Operator: ';' at line 61
+Identifier: _abc_0 at line 62
+Operator: ';' at line 62
+Identifier: _42 at line 63
+Operator: ';' at line 63
+Number: 0 at line 67
+Operator: ';' at line 67
+Number: 12345678901234567890 at line 68
+Operator: ';' at line 68
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-break at EOF |
+---------------------------------------------
+
+% ./golf test 1/scan.t16
+
+STDOUT:
+Keyword: break at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-return at EOF |
+----------------------------------------------
+
+% ./golf test 1/scan.t17
+
+STDOUT:
+Keyword: return at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-id at EOF |
+------------------------------------------
+
+% ./golf test 1/scan.t18
+
+STDOUT:
+Identifier: asdf at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-number at EOF |
+----------------------------------------------
+
+% ./golf test 1/scan.t19
+
+STDOUT:
+Number: 12345 at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-string at EOF |
+----------------------------------------------
+
+% ./golf test 1/scan.t20
+
+STDOUT:
+String: "asdf" at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-) at EOF |
+-----------------------------------------
+
+% ./golf test 1/scan.t21
+
+STDOUT:
+Operator: ')' at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: semicolon insertion post-} at EOF |
+-----------------------------------------
+
+% ./golf test 1/scan.t22
+
+STDOUT:
+Operator: '}' at line 2
+Operator: ';' at line 2
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: string ending in EOF |
+----------------------------
+
+% ./golf test 1/scan.t23
+
+STDOUT:
+
+
+STDERR:
+Error: EOF at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: partial string containing newline |
+-----------------------------------------
+
+% ./golf test 1/scan.t24
+
+STDOUT:
+
+
+STDERR:
+Error: \n at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: string containing newline |
+---------------------------------
+
+% ./golf test 1/scan.t25
+
+STDOUT:
+
+
+STDERR:
+Error: \n at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: unescaped double quote in string |
+----------------------------------------
+
+% ./golf test 1/scan.t26
+
+STDOUT:
+String: "abc" at line 2
+Identifier: def at line 2
+
+
+STDERR:
+Error: \n at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: string escape at EOF |
+----------------------------
+
+% ./golf test 1/scan.t27
+
+STDOUT:
+
+
+STDERR:
+Error: EOF at line 2
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: string escape then newline |
+----------------------------------
+
+% ./golf test 1/scan.t28
+
+STDOUT:
+
+
+STDERR:
+Error: invalid escape char '\n' at line 3
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: legal strings |
+---------------------
+
+% ./golf test 1/scan.t29
+
+STDOUT:
+String: "abc" at line 3
+Operator: ';' at line 3
+String: "ab\t\ndef" at line 4
+Operator: ';' at line 4
+String: "ab\"cd" at line 5
+Operator: ';' at line 5
+String: "ab\\\"cd" at line 6
+Operator: ';' at line 6
+String: "a\b\r\fcd" at line 7
+Operator: ';' at line 7
+String: "abc'def" at line 8
+Operator: ';' at line 8
+
+
+STDERR:
+Error: \n at line 9
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: illegal "x" string escape |
+---------------------------------
+
+% ./golf test 1/scan.t30
+
+STDOUT:
+
+
+STDERR:
+Error: invalid escape char 'x' at line 3
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: illegal "a" string escape |
+---------------------------------
+
+% ./golf test 1/scan.t31
+
+STDOUT:
+
+
+STDERR:
+Error: invalid escape char 'a' at line 3
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: illegal "u" string escape |
+---------------------------------
+
+% ./golf test 1/scan.t32
+
+STDOUT:
+
+
+STDERR:
+Error: invalid escape char 'u' at line 3
+
+
+RETURN CODE: 1
+
+Run ended on Sat Feb 25 18:05:42 2023
+

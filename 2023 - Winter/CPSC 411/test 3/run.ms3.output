@@ -1,0 +1,1013 @@
+Run started on Wed Mar 22 00:03:57 2023
+
+Hostname: laptop
+
+-------------------------------------------------------------------------------
+Running make |
+--------------
+
+% /usr/bin/make
+
+STDOUT:
+flex --c++ -o scanner.cc scanner.l
+bison parser.yy -o parser.cc -Wall
+g++ scanner.cc parser.cc main.cpp -o golf -Wall -Wextra
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Locating GoLF compiler |
+------------------------
+
+Compiler will be run as ./golf
+
+-------------------------------------------------------------------------------
+Test: too few arguments |
+-------------------------
+
+% ./golf
+
+STDOUT:
+
+
+STDERR:
+Error: File Argument Not Found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: too many arguments |
+--------------------------
+
+% ./golf /dev/null /dev/zero
+
+STDOUT:
+
+
+STDERR:
+Error: Too Many Arguments
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nonexistent file |
+------------------------
+
+% ./golf /i/do/not/exist
+
+STDOUT:
+
+
+STDERR:
+Error: Can't open file
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: later global "int" redeclaration |
+----------------------------------------
+
+% ./golf test 3//check.t1
+
+STDOUT:
+
+
+STDERR:
+Error: name cant be a type
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: global var declaration loop |
+-----------------------------------
+
+% ./golf test 3//check.t2
+
+STDOUT:
+
+
+STDERR:
+Error: name cant be a type
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: local var version of check.t2 |
+-------------------------------------
+
+% ./golf test 3//check.t3
+
+STDOUT:
+Program
+	func at line 4
+		new id [main] at line 4
+		sig
+			formals
+			id type [void] at line 4
+		Block
+			var at line 5
+				new id [int] at line 5
+				id type [int] at line 5
+			expr stmt at line 6
+				func call
+					id [printi] sig=void at line 6
+					actuals
+						id [int] sig=int at line 6
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: global name test |
+------------------------
+
+% ./golf test 3//check.t4
+
+STDOUT:
+Program
+	global var at line 3
+		new id [b4int] at line 3
+		id type [int] at line 3
+	func at line 5
+		new id [b4func] at line 5
+		sig
+			formals
+			id type [void] at line 5
+		Block
+			expr stmt at line 6
+				func call
+					id [printi] sig=void at line 6
+					actuals
+						id [b4int] sig=int at line 6
+			expr stmt at line 7
+				func call
+					id [printi] sig=void at line 7
+					actuals
+						id [aft3rint] sig=int at line 7
+			expr stmt at line 8
+				func call
+					id [aft3rfunc] sig=f():void at line 8
+					actuals
+	func at line 11
+		new id [main] at line 11
+		sig
+			formals
+			id type [void] at line 11
+		Block
+			expr stmt at line 12
+				func call
+					id [b4func] sig=f():void at line 12
+					actuals
+	func at line 15
+		new id [aft3rfunc] at line 15
+		sig
+			formals
+			id type [void] at line 15
+		Block
+			expr stmt at line 16
+				func call
+					id [printi] sig=void at line 16
+					actuals
+						id [b4int] sig=int at line 16
+			expr stmt at line 17
+				func call
+					id [printi] sig=void at line 17
+					actuals
+						id [aft3rint] sig=int at line 17
+	global var at line 20
+		new id [aft3rint] at line 20
+		id type [int] at line 20
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: block scope check |
+-------------------------
+
+% ./golf test 3//check.t5
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void] at line 3
+		Block
+			var at line 4
+				new id [x] at line 4
+				id type [int] at line 4
+			Block
+				var at line 6
+					new id [x] at line 6
+					id type [bool] at line 6
+				Block
+					var at line 8
+						new id [x] at line 8
+						id type [string] at line 8
+					= at line 9
+						id [x] sig=string at line 9
+						string [asdf] at line 9
+					Block
+						var at line 11
+							new id [x] at line 11
+							id type [int] at line 11
+						= at line 12
+							id [x] sig=int at line 12
+							+ at line 12
+								id [x] sig=int at line 12
+								int [1] at line 12
+					expr stmt at line 14
+						func call
+							id [prints] sig=void at line 14
+							actuals
+								id [x] sig=string at line 14
+				expr stmt at line 16
+					func call
+						id [printb] sig=void at line 16
+						actuals
+							id [x] sig=bool at line 16
+			expr stmt at line 18
+				func call
+					id [printi] sig=void at line 18
+					actuals
+						id [x] sig=int at line 18
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: global var declaration, complex loop |
+--------------------------------------------
+
+% ./golf test 3//check.t6
+
+STDOUT:
+
+
+STDERR:
+Error: name cant be a type
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: parameter scope test |
+----------------------------
+
+% ./golf test 3//check.t7
+
+STDOUT:
+Program
+	func at line 3
+		new id [foo] at line 3
+		sig
+			formals
+				formal
+					new id [int] at line 3
+					id type [int] at line 3
+			id type [int] at line 3
+		Block
+			expr stmt at line 4
+				func call
+					id [printi] sig=void at line 4
+					actuals
+						id [int] sig=int at line 4
+			return at line 5
+				id [int] sig=int at line 5
+	func at line 8
+		new id [bar] at line 8
+		sig
+			formals
+				formal
+					new id [bar] at line 8
+					id type [int] at line 8
+			id type [void] at line 8
+		Block
+			empty stmt
+	func at line 11
+		new id [string] at line 11
+		sig
+			formals
+				formal
+					new id [string] at line 11
+					id type [int] at line 11
+			id type [bool] at line 11
+		Block
+			return at line 12
+				id [true] sig=bool at line 12
+	func at line 15
+		new id [main] at line 15
+		sig
+			formals
+			id type [void] at line 15
+		Block
+			empty stmt
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: constants can't be changed |
+----------------------------------
+
+% ./golf test 3//check.t8
+
+STDOUT:
+
+
+STDERR:
+Error: Cant reassign const
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nonexistent type name |
+-----------------------------
+
+% ./golf test 3//check.t9
+
+STDOUT:
+
+
+STDERR:
+Error: cant find token {notthere
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: type name not a type |
+----------------------------
+
+% ./golf test 3//check.t10
+
+STDOUT:
+
+
+STDERR:
+Error: Expected type
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: formal parameters need types |
+------------------------------------
+
+% ./golf test 3//check.t11
+
+STDOUT:
+
+
+STDERR:
+Error: Expected type
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: multiple (main) functions, same name |
+--------------------------------------------
+
+% ./golf test 3//check.t12
+
+STDOUT:
+
+
+STDERR:
+Error: redefining token {main} at line 7
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: no main function |
+------------------------
+
+% ./golf test 3//check.t13
+
+STDOUT:
+
+
+STDERR:
+Error: Main function not found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: main can't have arguments |
+---------------------------------
+
+% ./golf test 3//check.t14
+
+STDOUT:
+
+
+STDERR:
+Error: Main function can not have parameters
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: main can't have a return value |
+--------------------------------------
+
+% ./golf test 3//check.t15
+
+STDOUT:
+
+
+STDERR:
+Error: Main function return type is not void
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: dup check for formal parameters |
+---------------------------------------
+
+% ./golf test 3//check.t16
+
+STDOUT:
+
+
+STDERR:
+Error: redefining token {i} at line 7
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: function call as lvalue |
+-------------------------------
+
+% ./golf test 3//check.t17
+
+STDOUT:
+
+
+STDERR:
+Error: Cant assign
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: function name as lvalue |
+-------------------------------
+
+% ./golf test 3//check.t18
+
+STDOUT:
+
+
+STDERR:
+Error: Cant assign
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: humongous integer literal |
+---------------------------------
+
+% ./golf test 3//check.t19
+
+STDOUT:
+
+
+STDERR:
+Error: Int out of range
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: positive integer literal out of range |
+---------------------------------------------
+
+% ./golf test 3//check.t20
+
+STDOUT:
+
+
+STDERR:
+Error: Int out of range
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: negative integer literal out of range |
+---------------------------------------------
+
+% ./golf test 3//check.t21
+
+STDOUT:
+
+
+STDERR:
+Error: Int out of range
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "break" not inside "for" loop |
+-------------------------------------
+
+% ./golf test 3//check.t22
+
+STDOUT:
+
+
+STDERR:
+Error: Not inside for loop
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "break" in block, but not in "for" |
+------------------------------------------
+
+% ./golf test 3//check.t23
+
+STDOUT:
+
+
+STDERR:
+Error: Not inside for loop
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "break" in "if" block |
+-----------------------------
+
+% ./golf test 3//check.t24
+
+STDOUT:
+
+
+STDERR:
+Error: Not inside for loop
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: missing return statement |
+--------------------------------
+
+% ./golf test 3//check.t25
+
+STDOUT:
+
+
+STDERR:
+Error: Return not found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: returning value from void function |
+------------------------------------------
+
+% ./golf test 3//check.t26
+
+STDOUT:
+
+
+STDERR:
+Error: Return type does not match
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: return type mismatch |
+----------------------------
+
+% ./golf test 3//check.t27
+
+STDOUT:
+
+
+STDERR:
+Error: Return type does not match
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: missing return type |
+---------------------------
+
+% ./golf test 3//check.t28
+
+STDOUT:
+
+
+STDERR:
+Error: Return type does not match
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "if" expr not a boolean type |
+------------------------------------
+
+% ./golf test 3//check.t29
+
+STDOUT:
+
+
+STDERR:
+Error: If condition must result in bool
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "if"-"else" not a boolean type |
+--------------------------------------
+
+% ./golf test 3//check.t30
+
+STDOUT:
+
+
+STDERR:
+Error: If condition must result in bool
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: "for" expr not a boolean type |
+-------------------------------------
+
+% ./golf test 3//check.t31
+
+STDOUT:
+
+
+STDERR:
+Error: For condition must result in bool
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: legit expression statements |
+-----------------------------------
+
+% ./golf test 3//check.t32
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void] at line 3
+		Block
+			var at line 4
+				new id [i] at line 4
+				id type [int] at line 4
+			expr stmt at line 5
+				id [i] sig=int at line 5
+			expr stmt at line 6
+				int [42] at line 6
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: built-in routine check |
+------------------------------
+
+% ./golf test 3//check.t33
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void] at line 3
+		Block
+			expr stmt at line 4
+				func call
+					id [prints] sig=void at line 4
+					actuals
+						string [Hello, world!\n] at line 4
+			expr stmt at line 5
+				func call
+					id [printb] sig=void at line 5
+					actuals
+						id [true] sig=bool at line 5
+			expr stmt at line 6
+				func call
+					id [printi] sig=void at line 6
+					actuals
+						int [123] at line 6
+			expr stmt at line 7
+				func call
+					id [printc] sig=void at line 7
+					actuals
+						int [123] at line 7
+			var at line 8
+				new id [ch] at line 8
+				id type [int] at line 8
+			= at line 9
+				id [ch] sig=int at line 9
+				func call
+					id [getchar] sig=int at line 9
+					actuals
+			expr stmt at line 10
+				func call
+					id [halt] sig=void at line 10
+					actuals
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: actual parameter type check |
+-----------------------------------
+
+% ./golf test 3//check.t34
+
+STDOUT:
+
+
+STDERR:
+Error: Type of input do not match
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: operand type mismatch |
+-----------------------------
+
+% ./golf test 3//check.t35
+
+STDOUT:
+
+
+STDERR:
+Error: Invalid types in expression at line no 10
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: another actual parameter type check |
+-------------------------------------------
+
+% ./golf test 3//check.t36
+
+STDOUT:
+
+
+STDERR:
+Error: Number of inputs invalid
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: return+argument checks |
+------------------------------
+
+% ./golf test 3//check.t37
+
+STDOUT:
+
+
+STDERR:
+Error: Number of inputs invalid
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: scope check and undefined variable |
+------------------------------------------
+
+% ./golf test 3//check.t38
+
+STDOUT:
+
+
+STDERR:
+Error: cant find token {c
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: redefined variable |
+--------------------------
+
+% ./golf test 3//check.t39
+
+STDOUT:
+
+
+STDERR:
+Error: redefining token {b} at line 13
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: comparable and ordered comparisons |
+------------------------------------------
+
+% ./golf test 3//check.t40
+
+STDOUT:
+
+
+STDERR:
+Error: Invalid types in expression at line no 8
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: int/bool distinction |
+----------------------------
+
+% ./golf test 3//check.t41
+
+STDOUT:
+
+
+STDERR:
+Error: Cant assign
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: deep type propagation |
+-----------------------------
+
+% ./golf test 3//check.t42
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void] at line 3
+		Block
+			var at line 4
+				new id [x] at line 4
+				id type [int] at line 4
+			expr stmt at line 5
+				>= at line 5
+					- at line 5
+						+ at line 5
+							int [2] at line 5
+							* at line 5
+								int [3] at line 5
+								int [5] at line 5
+						int [123] at line 5
+					u- at line 5
+						u- at line 5
+							u- at line 5
+								id [x] sig=int at line 5
+			var at line 7
+				new id [b] at line 7
+				id type [bool] at line 7
+			expr stmt at line 8
+				!= at line 8
+					u! at line 8
+						u! at line 8
+							u! at line 8
+								|| at line 8
+									&& at line 8
+										id [true] sig=bool at line 8
+										id [false] sig=bool at line 8
+									== at line 8
+										id [b] sig=bool at line 8
+										id [true] sig=bool at line 8
+					<= at line 8
+						int [5] at line 8
+						int [6] at line 8
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: redefining "true" and "false" |
+-------------------------------------
+
+% ./golf test 3//check.t43
+
+STDOUT:
+Program
+	global var at line 3
+		new id [true] at line 3
+		id type [int] at line 3
+	func at line 5
+		new id [main] at line 5
+		sig
+			formals
+			id type [void] at line 5
+		Block
+			var at line 6
+				new id [false] at line 6
+				id type [int] at line 6
+			expr stmt at line 7
+				func call
+					id [printi] sig=void at line 7
+					actuals
+						* at line 7
+							id [true] sig=int at line 7
+							id [false] sig=int at line 7
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: call of non-function |
+----------------------------
+
+% ./golf test 3//check.t44
+
+STDOUT:
+
+
+STDERR:
+Error: Cant call string
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: type id used in wrong context |
+-------------------------------------
+
+% ./golf test 3//check.t45
+
+STDOUT:
+
+
+STDERR:
+Error: operand can not be a type
+
+
+RETURN CODE: 1
+
+Run ended on Wed Mar 22 00:04:00 2023
+

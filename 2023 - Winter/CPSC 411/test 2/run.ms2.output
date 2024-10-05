@@ -1,0 +1,1386 @@
+Run started on Tue Feb 28 21:23:34 2023
+
+Hostname: laptop
+
+-------------------------------------------------------------------------------
+Running make |
+--------------
+
+% /usr/bin/make
+
+STDOUT:
+flex --c++ -o scanner.cc scanner.l
+bison parser.yy -o parser.cc -Wall
+g++ scanner.cc parser.cc main.cpp -o golf -Wall -Wextra
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Locating GoLF compiler |
+------------------------
+
+Compiler will be run as ./golf
+
+-------------------------------------------------------------------------------
+Test: too few arguments |
+-------------------------
+
+% ./golf
+
+STDOUT:
+
+
+STDERR:
+Error: File Argument Not Found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: too many arguments |
+--------------------------
+
+% ./golf /dev/null /dev/zero
+
+STDOUT:
+
+
+STDERR:
+Error: Too Many Arguments
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nonexistent file |
+------------------------
+
+% ./golf /i/do/not/exist
+
+STDOUT:
+
+
+STDERR:
+Error: Can't open file
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: func open brace in wrong place |
+--------------------------------------
+
+% ./golf test 2/parse.t1
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 3. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "for" open brace exception |
+----------------------------------
+
+% ./golf test 2/parse.t2
+
+STDOUT:
+Program
+	func at line 4
+		new id [main] at line 4
+		sig
+			formals
+			id type [void]
+		Block
+			for at line 5
+				Block
+					empty stmt
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "for" open brace in wrong place |
+---------------------------------------
+
+% ./golf test 2/parse.t3
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 4. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "if" open brace in wrong place |
+--------------------------------------
+
+% ./golf test 2/parse.t4
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 4. Expected `+`, `-`, `*`, `/`, `%`, `&&`, `||`, `==`, `!=`, or `<`.
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: weird but correct formatting |
+------------------------------------
+
+% ./golf test 2/parse.t5
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			if at line 5
+				== at line 5
+					+ at line 5
+						number [2] at line 5
+						number [3] at line 6
+					number [5] at line 7
+				Block
+					empty stmt
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: precedence check |
+------------------------
+
+% ./golf test 2/parse.t6
+
+STDOUT:
+Program
+	func at line 4
+		new id [foo] at line 4
+		sig
+			formals
+			id type [asdf] at line 4
+		Block
+			= at line 5
+				id [x] at line 5
+				+ at line 5
+					number [2] at line 5
+					* at line 5
+						number [3] at line 5
+						number [5] at line 5
+			= at line 6
+				id [y] at line 6
+				* at line 6
+					+ at line 6
+						number [2] at line 6
+						number [3] at line 6
+					number [5] at line 6
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: formal and actual params |
+--------------------------------
+
+% ./golf test 2/parse.t7
+
+STDOUT:
+Program
+	func at line 3
+		new id [foo] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			empty stmt
+	func at line 6
+		new id [bar] at line 6
+		sig
+			formals
+				formal
+					new id [a1] at line 6
+					id type [int] at line 6
+				formal
+					new id [a2] at line 6
+					id type [bool] at line 6
+				formal
+					new id [a3] at line 6
+					id type [sometype] at line 6
+			id type [returntype] at line 6
+		Block
+			empty stmt
+	func at line 9
+		new id [baz] at line 9
+		sig
+			formals
+			id type [int] at line 9
+		Block
+			expr stmt
+				func call
+					id [blarg] at line 10
+					actuals
+						+ at line 11
+							number [123] at line 11
+							number [456] at line 11
+						expr stmt
+							func call
+								id [garble] at line 12
+								actuals
+									number [789] at line 12
+						id [true] at line 13
+						expr stmt
+							func call
+								id [greep] at line 14
+								actuals
+									id [false] at line 14
+									string [eek] at line 14
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: unary and binary minus |
+------------------------------
+
+% ./golf test 2/parse.t8
+
+STDOUT:
+Program
+	func at line 3
+		new id [main] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			= at line 4
+				id [x] at line 4
+				- at line 4
+					id [a] at line 4
+					u- at line 4
+						number [123] at line 4
+			= at line 5
+				id [x] at line 5
+				- at line 5
+					id [a] at line 5
+					u- at line 5
+						number [123] at line 5
+			= at line 6
+				id [x] at line 6
+				- at line 6
+					id [a] at line 6
+					u- at line 6
+						u- at line 6
+							number [123] at line 6
+			= at line 7
+				id [x] at line 7
+				- at line 7
+					id [a] at line 7
+					u- at line 7
+						id [b] at line 7
+			= at line 8
+				id [x] at line 8
+				u- at line 8
+					u- at line 8
+						u- at line 8
+							u- at line 8
+								u- at line 8
+									u- at line 8
+										u- at line 8
+											id [x] at line 8
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func open brace in wrong place, with semicolon |
+------------------------------------------------------
+
+% ./golf test 2/parse.t9
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 4. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func open brace with bonus semicolon |
+--------------------------------------------
+
+% ./golf test 2/parse.t10
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 4. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "for" open brace in wrong place, with semicolon |
+-------------------------------------------------------
+
+% ./golf test 2/parse.t11
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 5. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "for" with bonus semicolon |
+----------------------------------
+
+% ./golf test 2/parse.t12
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 5. Expected `{`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "if" open brace in wrong place, with semicolon |
+------------------------------------------------------
+
+% ./golf test 2/parse.t13
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 5. Expected `+`, `-`, `*`, `/`, `%`, `&&`, `||`, `==`, `!=`, or `<`.
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: "if" with bonus semicolon |
+---------------------------------
+
+% ./golf test 2/parse.t14
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 5. Expected `+`, `-`, `*`, `/`, `%`, `&&`, `||`, `==`, `!=`, or `<`.
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func line breaks using trailing commas |
+----------------------------------------------
+
+% ./golf test 2/parse.t15
+
+STDOUT:
+Program
+	func at line 3
+		new id [foo] at line 3
+		sig
+			formals
+				formal
+					new id [a] at line 3
+					id type [int] at line 3
+				formal
+					new id [b] at line 4
+					id type [int] at line 4
+				formal
+					new id [c] at line 5
+					id type [int] at line 5
+			id type [void]
+		Block
+			empty stmt
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func line breaks sans trailing comma |
+--------------------------------------------
+
+% ./golf test 2/parse.t16
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 6. Expected `)`, or `,`.
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func call line breaks with trailing commas |
+--------------------------------------------------
+
+% ./golf test 2/parse.t17
+
+STDOUT:
+Program
+	func at line 3
+		new id [foo] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			expr stmt
+				func call
+					id [garbled] at line 4
+					actuals
+						id [a] at line 4
+						id [b] at line 5
+						id [c] at line 6
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: func call line breaks sans trailing comma |
+-------------------------------------------------
+
+% ./golf test 2/parse.t18
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `;` at line 7. Expected `)`, or `,`.
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: legit syntax salad |
+--------------------------
+
+% ./golf test 2/parse.t19
+
+STDOUT:
+Program
+	func at line 3
+		new id [asdf] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			var at line 4
+				new id [i] at line 4
+				id type [int] at line 4
+			empty stmt
+			= at line 6
+				id [x] at line 6
+				number [123] at line 6
+			expr stmt
+				func call
+					id [foo] at line 7
+					actuals
+						id [d] at line 7
+			expr stmt
+				func call
+					id [bar] at line 8
+					actuals
+						id [d] at line 8
+			return at line 9
+			return at line 10
+				number [12345] at line 10
+			break at line 11
+			Block
+				id [ego] at line 13
+			if at line 15
+				id [true] at line 15
+				Block
+					number [42] at line 16
+			ifelse at line 18
+				id [false] at line 18
+				Block
+					number [111] at line 19
+				ifelse at line 20
+					id [fallse] at line 20
+					Block
+						number [222] at line 21
+					Block
+						number [333] at line 23
+			ifelse at line 25
+				id [false] at line 25
+				Block
+					number [444] at line 26
+				Block
+					number [555] at line 28
+			for at line 30
+				Block
+					number [666] at line 31
+			for at line 33
+				id [some_expr] at line 33
+				Block
+					number [777] at line 34
+			= at line 37
+				string [abc] at line 37
+				id [def] at line 37
+			= at line 38
+				== at line 38
+					+ at line 38
+						id [asdf] at line 38
+						number [12] at line 38
+					number [4] at line 38
+				id [bcd] at line 38
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: assignment |
+------------------
+
+% ./golf test 2/parse.t20
+
+STDOUT:
+Program
+
+
+STDERR:
+Unexpected token `=` at line 7. Expected `;`.
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: associativity test |
+--------------------------
+
+% ./golf test 2/parse.t21
+
+STDOUT:
+Program
+	func at line 3
+		new id [a_sock] at line 3
+		sig
+			formals
+			id type [void]
+		Block
+			var at line 4
+				new id [a] at line 4
+				id type [int] at line 4
+			var at line 5
+				new id [b] at line 5
+				id type [int] at line 5
+			var at line 6
+				new id [c] at line 6
+				id type [int] at line 6
+			var at line 7
+				new id [d] at line 7
+				id type [int] at line 7
+			var at line 8
+				new id [e] at line 8
+				id type [int] at line 8
+			+ at line 10
+				+ at line 10
+					+ at line 10
+						+ at line 10
+							id [a] at line 10
+							id [b] at line 10
+						id [c] at line 10
+					id [d] at line 10
+				id [e] at line 10
+			/ at line 11
+				/ at line 11
+					/ at line 11
+						/ at line 11
+							id [a] at line 11
+							id [b] at line 11
+						id [d] at line 11
+					id [d] at line 11
+				id [e] at line 11
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: a calculated move |
+-------------------------
+
+% ./golf test 2/gen.t18
+
+STDOUT:
+Program
+	func at line 5
+		new id [main] at line 5
+		sig
+			formals
+			id type [void]
+		Block
+			expr stmt
+				func call
+					id [init] at line 6
+					actuals
+			expr stmt
+				func call
+					id [parser] at line 7
+					actuals
+	global var at line 14
+		new id [_havechar] at line 14
+		id type [bool] at line 14
+	global var at line 15
+		new id [_char] at line 15
+		id type [int] at line 15
+	func at line 17
+		new id [getc] at line 17
+		sig
+			formals
+			id type [int] at line 17
+		Block
+			if at line 18
+				id [_havechar] at line 18
+				Block
+					= at line 19
+						id [_havechar] at line 19
+						id [false] at line 19
+					return at line 20
+						id [_char] at line 20
+			return at line 22
+				expr stmt
+					func call
+						id [getchar] at line 22
+						actuals
+	func at line 25
+		new id [ungetc] at line 25
+		sig
+			formals
+				formal
+					new id [ch] at line 25
+					id type [int] at line 25
+			id type [void]
+		Block
+			if at line 26
+				id [_havechar] at line 26
+				Block
+					expr stmt
+						func call
+							id [prints] at line 27
+							actuals
+								string [Internal error: too many ungets!\n] at line 27
+					expr stmt
+						func call
+							id [halt] at line 28
+							actuals
+			= at line 30
+				id [_havechar] at line 30
+				id [true] at line 30
+			= at line 31
+				id [_char] at line 31
+				id [ch] at line 31
+	global var at line 38
+		new id [_havetoken] at line 38
+		id type [bool] at line 38
+	global var at line 39
+		new id [_token] at line 39
+		id type [int] at line 39
+	global var at line 40
+		new id [attr] at line 40
+		id type [int] at line 40
+	func at line 42
+		new id [peek] at line 42
+		sig
+			formals
+			id type [int] at line 42
+		Block
+			if at line 43
+				id [_havetoken] at line 43
+				Block
+					return at line 44
+						id [_token] at line 44
+			= at line 46
+				id [_havetoken] at line 46
+				id [true] at line 46
+			= at line 47
+				id [_token] at line 47
+				expr stmt
+					func call
+						id [scanner] at line 47
+						actuals
+			return at line 48
+				id [_token] at line 48
+	func at line 51
+		new id [match] at line 51
+		sig
+			formals
+				formal
+					new id [expect] at line 51
+					id type [int] at line 51
+			id type [void]
+		Block
+			if at line 52
+				!= at line 52
+					expr stmt
+						func call
+							id [peek] at line 52
+							actuals
+					id [expect] at line 52
+				Block
+					expr stmt
+						func call
+							id [prints] at line 53
+							actuals
+								string [Error: expected ] at line 53
+					expr stmt
+						func call
+							id [printc] at line 54
+							actuals
+								id [expect] at line 54
+					expr stmt
+						func call
+							id [prints] at line 55
+							actuals
+								string [\n] at line 55
+					expr stmt
+						func call
+							id [halt] at line 56
+							actuals
+			= at line 58
+				id [_havetoken] at line 58
+				id [false] at line 58
+	func at line 61
+		new id [scanner] at line 61
+		sig
+			formals
+			id type [int] at line 61
+		Block
+			var at line 62
+				new id [ch] at line 62
+				id type [int] at line 62
+			for at line 64
+				Block
+					= at line 65
+						id [ch] at line 65
+						expr stmt
+							func call
+								id [getc] at line 65
+								actuals
+					if at line 66
+						u! at line 66
+							expr stmt
+								func call
+									id [isspace] at line 66
+									actuals
+										id [ch] at line 66
+						Block
+							break at line 67
+			if at line 71
+				== at line 71
+					id [ch] at line 71
+					id [EOF] at line 71
+				Block
+					return at line 71
+						id [TK_EOF] at line 71
+			if at line 72
+				== at line 72
+					id [ch] at line 72
+					id [ASCII_NL] at line 72
+				Block
+					return at line 72
+						id [TK_EOLN] at line 72
+			if at line 73
+				== at line 73
+					id [ch] at line 73
+					id [ASCII_PLUS] at line 73
+				Block
+					return at line 73
+						id [TK_ADD] at line 73
+			if at line 74
+				== at line 74
+					id [ch] at line 74
+					id [ASCII_MINUS] at line 74
+				Block
+					return at line 74
+						id [TK_SUB] at line 74
+			if at line 75
+				== at line 75
+					id [ch] at line 75
+					id [ASCII_STAR] at line 75
+				Block
+					return at line 75
+						id [TK_MUL] at line 75
+			if at line 76
+				== at line 76
+					id [ch] at line 76
+					id [ASCII_SLASH] at line 76
+				Block
+					return at line 76
+						id [TK_DIV] at line 76
+			if at line 77
+				== at line 77
+					id [ch] at line 77
+					id [ASCII_LPAREN] at line 77
+				Block
+					return at line 77
+						id [TK_LPAREN] at line 77
+			if at line 78
+				== at line 78
+					id [ch] at line 78
+					id [ASCII_RPAREN] at line 78
+				Block
+					return at line 78
+						id [TK_RPAREN] at line 78
+			if at line 80
+				expr stmt
+					func call
+						id [isdigit] at line 80
+						actuals
+							id [ch] at line 80
+				Block
+					= at line 81
+						id [attr] at line 81
+						number [0] at line 81
+					for at line 82
+						expr stmt
+							func call
+								id [isdigit] at line 82
+								actuals
+									id [ch] at line 82
+						Block
+							= at line 83
+								id [attr] at line 83
+								+ at line 83
+									* at line 83
+										id [attr] at line 83
+										number [10] at line 83
+									- at line 83
+										id [ch] at line 83
+										id [ASCII_0] at line 83
+							= at line 84
+								id [ch] at line 84
+								expr stmt
+									func call
+										id [getc] at line 84
+										actuals
+					expr stmt
+						func call
+							id [ungetc] at line 86
+							actuals
+								id [ch] at line 86
+					return at line 87
+						id [TK_NUMBER] at line 87
+			expr stmt
+				func call
+					id [prints] at line 90
+					actuals
+						string [Error: invalid character.\n] at line 90
+			expr stmt
+				func call
+					id [halt] at line 91
+					actuals
+	func at line 94
+		new id [isdigit] at line 94
+		sig
+			formals
+				formal
+					new id [ch] at line 94
+					id type [int] at line 94
+			id type [bool] at line 94
+		Block
+			return at line 95
+				&& at line 95
+					>= at line 95
+						id [ch] at line 95
+						id [ASCII_0] at line 95
+					<= at line 95
+						id [ch] at line 95
+						id [ASCII_9] at line 95
+	func at line 98
+		new id [isspace] at line 98
+		sig
+			formals
+				formal
+					new id [ch] at line 98
+					id type [int] at line 98
+			id type [bool] at line 98
+		Block
+			return at line 99
+				|| at line 99
+					|| at line 99
+						== at line 99
+							id [ch] at line 99
+							id [ASCII_SPACE] at line 99
+						== at line 100
+							id [ch] at line 100
+							id [ASCII_TAB] at line 100
+					== at line 101
+						id [ch] at line 101
+						id [ASCII_CR] at line 101
+	func at line 108
+		new id [parser] at line 108
+		sig
+			formals
+			id type [void]
+		Block
+			var at line 109
+				new id [result] at line 109
+				id type [int] at line 109
+			for at line 111
+				!= at line 111
+					expr stmt
+						func call
+							id [peek] at line 111
+							actuals
+					id [TK_EOF] at line 111
+				Block
+					= at line 112
+						id [result] at line 112
+						expr stmt
+							func call
+								id [E] at line 112
+								actuals
+					expr stmt
+						func call
+							id [match] at line 113
+							actuals
+								id [TK_EOLN] at line 113
+					expr stmt
+						func call
+							id [prints] at line 115
+							actuals
+								string [ = ] at line 115
+					expr stmt
+						func call
+							id [printi] at line 116
+							actuals
+								id [result] at line 116
+					expr stmt
+						func call
+							id [prints] at line 117
+							actuals
+								string [\n] at line 117
+	func at line 121
+		new id [E] at line 121
+		sig
+			formals
+			id type [int] at line 121
+		Block
+			var at line 122
+				new id [l] at line 122
+				id type [int] at line 122
+			var at line 123
+				new id [r] at line 123
+				id type [int] at line 123
+			var at line 124
+				new id [token] at line 124
+				id type [int] at line 124
+			= at line 126
+				id [l] at line 126
+				expr stmt
+					func call
+						id [T] at line 126
+						actuals
+			for at line 127
+				|| at line 127
+					== at line 127
+						expr stmt
+							func call
+								id [peek] at line 127
+								actuals
+						id [TK_ADD] at line 127
+					== at line 127
+						expr stmt
+							func call
+								id [peek] at line 127
+								actuals
+						id [TK_SUB] at line 127
+				Block
+					= at line 128
+						id [token] at line 128
+						expr stmt
+							func call
+								id [peek] at line 128
+								actuals
+					expr stmt
+						func call
+							id [match] at line 129
+							actuals
+								id [token] at line 129
+					= at line 130
+						id [r] at line 130
+						expr stmt
+							func call
+								id [T] at line 130
+								actuals
+					ifelse at line 132
+						== at line 132
+							id [token] at line 132
+							id [TK_ADD] at line 132
+						Block
+							= at line 133
+								id [l] at line 133
+								+ at line 133
+									id [l] at line 133
+									id [r] at line 133
+						Block
+							= at line 135
+								id [l] at line 135
+								- at line 135
+									id [l] at line 135
+									id [r] at line 135
+			return at line 138
+				id [l] at line 138
+	func at line 141
+		new id [T] at line 141
+		sig
+			formals
+			id type [int] at line 141
+		Block
+			var at line 142
+				new id [l] at line 142
+				id type [int] at line 142
+			var at line 143
+				new id [r] at line 143
+				id type [int] at line 143
+			var at line 144
+				new id [token] at line 144
+				id type [int] at line 144
+			= at line 146
+				id [l] at line 146
+				expr stmt
+					func call
+						id [F] at line 146
+						actuals
+			for at line 147
+				|| at line 147
+					== at line 147
+						expr stmt
+							func call
+								id [peek] at line 147
+								actuals
+						id [TK_MUL] at line 147
+					== at line 147
+						expr stmt
+							func call
+								id [peek] at line 147
+								actuals
+						id [TK_DIV] at line 147
+				Block
+					= at line 148
+						id [token] at line 148
+						expr stmt
+							func call
+								id [peek] at line 148
+								actuals
+					expr stmt
+						func call
+							id [match] at line 149
+							actuals
+								id [token] at line 149
+					= at line 150
+						id [r] at line 150
+						expr stmt
+							func call
+								id [F] at line 150
+								actuals
+					ifelse at line 152
+						== at line 152
+							id [token] at line 152
+							id [TK_MUL] at line 152
+						Block
+							= at line 153
+								id [l] at line 153
+								* at line 153
+									id [l] at line 153
+									id [r] at line 153
+						Block
+							= at line 155
+								id [l] at line 155
+								/ at line 155
+									id [l] at line 155
+									id [r] at line 155
+			return at line 158
+				id [l] at line 158
+	func at line 161
+		new id [F] at line 161
+		sig
+			formals
+			id type [int] at line 161
+		Block
+			var at line 162
+				new id [result] at line 162
+				id type [int] at line 162
+			var at line 164
+				new id [token] at line 164
+				id type [int] at line 164
+			= at line 165
+				id [token] at line 165
+				expr stmt
+					func call
+						id [peek] at line 165
+						actuals
+			ifelse at line 167
+				== at line 167
+					id [token] at line 167
+					id [TK_LPAREN] at line 167
+				Block
+					expr stmt
+						func call
+							id [match] at line 168
+							actuals
+								id [TK_LPAREN] at line 168
+					= at line 169
+						id [result] at line 169
+						expr stmt
+							func call
+								id [E] at line 169
+								actuals
+					expr stmt
+						func call
+							id [match] at line 170
+							actuals
+								id [TK_RPAREN] at line 170
+				ifelse at line 172
+					== at line 172
+						id [token] at line 172
+						id [TK_SUB] at line 172
+					Block
+						expr stmt
+							func call
+								id [match] at line 173
+								actuals
+									id [TK_SUB] at line 173
+						= at line 174
+							id [result] at line 174
+							u- at line 174
+								expr stmt
+									func call
+										id [F] at line 174
+										actuals
+					ifelse at line 176
+						== at line 176
+							id [token] at line 176
+							id [TK_NUMBER] at line 176
+						Block
+							expr stmt
+								func call
+									id [match] at line 177
+									actuals
+										id [TK_NUMBER] at line 177
+							= at line 178
+								id [result] at line 178
+								id [attr] at line 178
+						Block
+							expr stmt
+								func call
+									id [prints] at line 181
+									actuals
+										string [Error: expected factor.\n] at line 181
+							expr stmt
+								func call
+									id [halt] at line 182
+									actuals
+			return at line 184
+				id [result] at line 184
+	global var at line 191
+		new id [EOF] at line 191
+		id type [int] at line 191
+	global var at line 193
+		new id [TK_EOF] at line 193
+		id type [int] at line 193
+	global var at line 194
+		new id [TK_EOLN] at line 194
+		id type [int] at line 194
+	global var at line 195
+		new id [TK_NUMBER] at line 195
+		id type [int] at line 195
+	global var at line 196
+		new id [TK_ADD] at line 196
+		id type [int] at line 196
+	global var at line 197
+		new id [TK_SUB] at line 197
+		id type [int] at line 197
+	global var at line 198
+		new id [TK_MUL] at line 198
+		id type [int] at line 198
+	global var at line 199
+		new id [TK_DIV] at line 199
+		id type [int] at line 199
+	global var at line 200
+		new id [TK_LPAREN] at line 200
+		id type [int] at line 200
+	global var at line 201
+		new id [TK_RPAREN] at line 201
+		id type [int] at line 201
+	global var at line 203
+		new id [ASCII_0] at line 203
+		id type [int] at line 203
+	global var at line 204
+		new id [ASCII_9] at line 204
+		id type [int] at line 204
+	global var at line 205
+		new id [ASCII_PLUS] at line 205
+		id type [int] at line 205
+	global var at line 206
+		new id [ASCII_MINUS] at line 206
+		id type [int] at line 206
+	global var at line 207
+		new id [ASCII_STAR] at line 207
+		id type [int] at line 207
+	global var at line 208
+		new id [ASCII_SLASH] at line 208
+		id type [int] at line 208
+	global var at line 209
+		new id [ASCII_LPAREN] at line 209
+		id type [int] at line 209
+	global var at line 210
+		new id [ASCII_RPAREN] at line 210
+		id type [int] at line 210
+	global var at line 211
+		new id [ASCII_SPACE] at line 211
+		id type [int] at line 211
+	global var at line 212
+		new id [ASCII_TAB] at line 212
+		id type [int] at line 212
+	global var at line 213
+		new id [ASCII_CR] at line 213
+		id type [int] at line 213
+	global var at line 214
+		new id [ASCII_NL] at line 214
+		id type [int] at line 214
+	func at line 216
+		new id [init] at line 216
+		sig
+			formals
+			id type [void]
+		Block
+			= at line 217
+				id [EOF] at line 217
+				u- at line 217
+					number [1] at line 217
+			= at line 219
+				id [ASCII_0] at line 219
+				number [48] at line 219
+			= at line 220
+				id [ASCII_9] at line 220
+				number [57] at line 220
+			= at line 221
+				id [ASCII_PLUS] at line 221
+				number [43] at line 221
+			= at line 222
+				id [ASCII_MINUS] at line 222
+				number [45] at line 222
+			= at line 223
+				id [ASCII_STAR] at line 223
+				number [42] at line 223
+			= at line 224
+				id [ASCII_SLASH] at line 224
+				number [47] at line 224
+			= at line 225
+				id [ASCII_LPAREN] at line 225
+				number [40] at line 225
+			= at line 226
+				id [ASCII_RPAREN] at line 226
+				number [41] at line 226
+			= at line 227
+				id [ASCII_SPACE] at line 227
+				number [32] at line 227
+			= at line 228
+				id [ASCII_TAB] at line 228
+				number [9] at line 228
+			= at line 229
+				id [ASCII_CR] at line 229
+				number [13] at line 229
+			= at line 230
+				id [ASCII_NL] at line 230
+				number [10] at line 230
+			= at line 232
+				id [TK_EOF] at line 232
+				number [256] at line 232
+			= at line 233
+				id [TK_NUMBER] at line 233
+				number [257] at line 233
+			= at line 234
+				id [TK_ADD] at line 234
+				id [ASCII_PLUS] at line 234
+			= at line 235
+				id [TK_SUB] at line 235
+				id [ASCII_MINUS] at line 235
+			= at line 236
+				id [TK_MUL] at line 236
+				id [ASCII_STAR] at line 236
+			= at line 237
+				id [TK_DIV] at line 237
+				id [ASCII_SLASH] at line 237
+			= at line 238
+				id [TK_LPAREN] at line 238
+				id [ASCII_LPAREN] at line 238
+			= at line 239
+				id [TK_RPAREN] at line 239
+				id [ASCII_RPAREN] at line 239
+			= at line 240
+				id [TK_EOLN] at line 240
+				id [ASCII_NL] at line 240
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+Run ended on Tue Feb 28 21:23:36 2023
+
